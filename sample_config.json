@@ -1,0 +1,11 @@
+{
+  "format": "#ts #severity #method #path",
+  "unknown_field_format": "\t#__key: #__val",
+  "fields": {
+      "ts": {
+          "type": "datetime",
+          "fg": "grey",
+          "italic": true
+      }
+  }
+}

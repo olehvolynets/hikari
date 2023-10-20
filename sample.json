@@ -1,0 +1,17 @@
+{
+    "ts": "2023-10-18 11:33:12",
+    "severity": "INF",
+    "host": "127.0.0.1:42069",
+    "remote_id": "",
+    "http_meth": "POST",
+    "uri": "/hello_world",
+    "parameters": {
+        "id": 1234,
+        "o": "mr"
+    },
+    "some_array": [6, false, "asldkj"],
+
+    "foo": 123.456,
+    "bar": "asd",
+    "buz": true
+}
