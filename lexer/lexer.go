@@ -1,7 +1,6 @@
 package lexer
 
 import (
-	"errors"
 	"io"
 
 	"github.com/olehvolynets/sylphy/token"
@@ -14,56 +13,37 @@ type Lexer struct {
 	ch           byte
 }
 
-var ErrEOF = errors.New("end of format-string")
-
-func NewLexer(r io.Reader) *Lexer {
+func New(r io.Reader) *Lexer {
 	b, err := io.ReadAll(r)
 	if err != nil {
 		panic(err)
 	}
 
-	return &Lexer{
+	l := &Lexer{
 		input: string(b),
 	}
+
+	l.readChar()
+
+	return l
 }
 
-func Parse(r io.Reader) []token.Token {
-	fp := NewLexer(r)
-	fp.readChar()
-
-	tokens := make([]token.Token, 0)
-	for {
-		t, err := fp.NextToken()
-		if err != nil {
-			if errors.Is(err, ErrEOF) {
-				break
-			}
-
-			panic(err)
-		}
-
-		tokens = append(tokens, t)
-	}
-
-	return tokens
-}
-
-func (p *Lexer) NextToken() (token.Token, error) {
+func (p *Lexer) NextToken() token.Token {
 	var tok token.Token
 
 	switch p.ch {
 	case '#':
-		p.readChar()
-		attrName := p.readIdentifier()
-		tok = token.Token{Type: token.ATTRIBUTE, Literal: attrName}
+		p.readChar() // skip #
+		tok.Type = token.ATTRIBUTE
+		tok.Literal = p.readIdentifier()
 	case 0:
-		return tok, ErrEOF
+		tok.Type = token.EOF
 	default:
-		lit := p.readLiteral()
-		tok = token.Token{Type: token.LITERAL, Literal: lit}
+		tok.Type = token.LITERAL
+		tok.Literal = p.readLiteral()
 	}
 
-	return tok, nil
+	return tok
 }
 
 func (p *Lexer) readChar() {

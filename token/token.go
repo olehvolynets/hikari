@@ -3,7 +3,8 @@ package token
 type TokenType int
 
 const (
-	LITERAL = iota
+	EOF = iota
+	LITERAL
 	ATTRIBUTE
 )
 
