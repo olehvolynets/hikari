@@ -19,20 +19,31 @@ func New(sc *scheme.Scheme) *Sylphy {
 	s := &Sylphy{}
 
 	for _, item := range sc.Items {
+		var n Node
+
 		if item.Literal != "" {
-			s.sequence = append(s.sequence, node.NewLiteralNode(item))
-			continue
+			n = node.NewLiteralNode(item)
+		} else if len(item.Enum) > 0 {
+			n = node.NewEnumNode(item)
+		} else {
+			n = newAttrNode(item)
 		}
 
-		if len(item.Enum) != 0 {
-			s.sequence = append(s.sequence, node.NewEnumNode(item))
-			continue
-		}
-
-		s.sequence = append(s.sequence, node.NewAttributeNode(item))
+		s.sequence = append(s.sequence, n)
 	}
 
 	return s
+}
+
+func newAttrNode(scheme *scheme.SchemeItem) Node {
+	switch scheme.Type {
+	case "array":
+		return node.NewArrayNode(scheme)
+	case "object":
+		return node.NewObjectNode(scheme)
+	default:
+		return node.NewAttributeNode(scheme)
+	}
 }
 
 func (s *Sylphy) Print(entry map[string]any) {

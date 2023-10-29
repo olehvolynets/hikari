@@ -10,11 +10,12 @@
             "id": 1234,
             "o": "mr"
         },
-        "some_array": [
+        "dyn_array": [
             6,
             false,
             "asldkj"
         ],
+        "static_array": [],
         "foo": 123.456,
         "bar": "asd",
         "buz": true

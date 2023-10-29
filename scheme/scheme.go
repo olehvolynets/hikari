@@ -25,11 +25,6 @@ func New(r []byte) (*Scheme, error) {
 	return s, nil
 }
 
-type SchemeLiteral struct {
-	Literal      string
-	DisplayProps `yaml:",inline"`
-}
-
 type SchemeItem struct {
 	Name     string
 	Optional bool
@@ -37,11 +32,19 @@ type SchemeItem struct {
 	SrcFormat string `yaml:"src_format"`
 	DstFormat string `yaml:"dst_format"`
 
+	// Whether an Array/Object will be displayed inline or on multiple lines.
+	Multiline bool
+
 	SchemeLiteral `yaml:",inline"`
 
 	Enum    []EnumVariant
 	Prefix  *Decorator
 	Postfix *Decorator
+}
+
+type SchemeLiteral struct {
+	Literal      string
+	DisplayProps `yaml:",inline"`
 }
 
 type Decorator struct {

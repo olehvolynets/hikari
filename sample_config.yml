@@ -54,13 +54,12 @@
 - name: uri
 
 - literal: " "
-- name: buz
-  type: bool
+
+- name: dyn_array
+  type: array
   optional: true
-  fg: yellow
-  bold: true
-  prefix:
-    literal: "["
-  postfix:
-    literal: "]"
-    inherit: true
+
+- literal: " "
+
+- name: parameters
+  type: object
