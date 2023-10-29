@@ -2,27 +2,41 @@ package main
 
 import (
 	"encoding/json"
+	"flag"
 	"fmt"
 	"os"
 
 	"github.com/olehvolynets/sylphy"
-
-	_ "github.com/fatih/color"
+	"github.com/olehvolynets/sylphy/scheme"
 )
+
+var configFilePath = flag.String("config", ".sylphy.config.yml", "path to sylphy config file")
 
 func check(err error) {
 	if err != nil {
-		panic(err)
+		panic(fmt.Errorf("sylphy: %w", err))
 	}
 }
 
 func main() {
-	confFile, err := os.ReadFile("sample_config.json")
+	flag.Parse()
+
+	confFile, err := os.ReadFile(*configFilePath)
 	check(err)
 
-	cfg, err := sylphy.NewConfig(confFile)
+	scheme, err := scheme.New(confFile)
 	check(err)
 
-	marshalled, _ := json.MarshalIndent(cfg, "", "   ")
-	fmt.Println(string(marshalled))
+	s := sylphy.New(scheme)
+
+	payloadFile, err := os.ReadFile("sample.json")
+	check(err)
+
+	payload := make([]map[string]any, 0)
+	err = json.Unmarshal(payloadFile, &payload)
+	check(err)
+
+	for _, row := range payload {
+		s.Print(row)
+	}
 }

@@ -10,7 +10,7 @@ build:
 
 .PHONY: run
 run:
-	@$(tmp_bin)
+	@$(tmp_bin) -config sample_config.yml
 
 .PHONY: test
 test:
