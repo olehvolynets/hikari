@@ -8,12 +8,15 @@
         "uri": "/hello_world",
         "parameters": {
             "id": 1234,
-            "o": "mr"
+            "o": "mr",
+            "fooo123": null,
+            "if": true
         },
         "dyn_array": [
             6,
             false,
-            "asldkj"
+            "asldkj",
+            null
         ],
         "static_array": [],
         "foo": 123.456,

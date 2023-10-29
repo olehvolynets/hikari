@@ -4,20 +4,7 @@ import (
 	"bytes"
 	"fmt"
 
-	"github.com/fatih/color"
 	sch "github.com/olehvolynets/sylphy/scheme"
-)
-
-const (
-	inlineSeparator    = ", "
-	multilineSeparator = ",\n"
-)
-
-var (
-	operatorColor = color.New(color.FgHiWhite)
-	numberColor   = color.New(color.FgYellow)
-	boolColor     = color.New(color.FgMagenta, color.Bold)
-	stringColor   = color.New(color.FgGreen)
 )
 
 type ArrayNode struct {
@@ -68,18 +55,7 @@ func formatInlineSlice(buf *bytes.Buffer, s []any) {
 	operatorColor.Fprint(buf, "[")
 
 	for idx, item := range s {
-		switch item.(type) {
-		case int64:
-			numberColor.Fprintf(buf, "%d", item)
-		case float64:
-			numberColor.Fprintf(buf, "%f", item)
-		case string:
-			stringColor.Fprintf(buf, "%q", item)
-		case bool:
-			boolColor.Fprintf(buf, "%t", item)
-		default:
-			fmt.Fprintf(buf, "%v", item)
-		}
+		fmt.Fprint(buf, colorizeValue(item))
 
 		if idx < len(s)-1 {
 			operatorColor.Fprint(buf, inlineSeparator)
@@ -93,18 +69,7 @@ func formatMultilineSlice(buf *bytes.Buffer, s []any) {
 	operatorColor.Fprint(buf, "[\n")
 
 	for idx, item := range s {
-		switch item.(type) {
-		case int64:
-			numberColor.Fprintf(buf, "\t%d", item)
-		case float64:
-			numberColor.Fprintf(buf, "\t%f", item)
-		case string:
-			stringColor.Fprintf(buf, "\t%q", item)
-		case bool:
-			boolColor.Fprintf(buf, "\t%t", item)
-		default:
-			fmt.Fprintf(buf, "\t%v", item)
-		}
+		fmt.Fprintf(buf, "\t%s", colorizeValue(item))
 
 		if idx < len(s)-1 {
 			operatorColor.Fprint(buf, multilineSeparator)
