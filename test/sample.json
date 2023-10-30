@@ -9,7 +9,14 @@
         "id": 1234,
         "o": "mr",
         "fooo123": null,
-        "if": true
+        "if": true,
+        "bar": {
+            "kek": true,
+            "buz": {
+                "ahaha": "no"
+            }
+        },
+        "buzz": [1, 2, null, 4]
     },
     "dyn_array": [
         6,

@@ -32,6 +32,7 @@
     fg: black
     bg: magenta
     bold: true
+    blink: true
   - value: PNC
     bg: red
     fg: magenta
@@ -59,7 +60,8 @@
   type: array
   optional: true
 
-- literal: " "
+- literal: "\n"
 
 - name: parameters
   type: object
+  multiline: true
