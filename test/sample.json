@@ -1,0 +1,96 @@
+{
+    "ts": "2023-10-18 11:33:12",
+    "severity": "INF",
+    "host": "127.0.0.1:42069",
+    "remote_id": "",
+    "method": "POST",
+    "uri": "/hello_world",
+    "parameters": {
+        "id": 1234,
+        "o": "mr",
+        "fooo123": null,
+        "if": true
+    },
+    "dyn_array": [
+        6,
+        false,
+        "asldkj",
+        null
+    ],
+    "static_array": [],
+    "foo": 123.456,
+    "bar": "asd",
+    "buz": true
+}
+{
+    "ts": "2023-10-18 11:33:12",
+    "severity": "DBG",
+    "host": "127.0.0.1:42069",
+    "remote_id": "",
+    "method": "POST",
+    "uri": "/hello_world",
+    "parameters": {
+        "id": 1234,
+        "o": "mr"
+    }
+}
+{
+    "ts": "2023-10-18 11:33:12",
+    "severity": "TRC",
+    "host": "127.0.0.1:42069",
+    "remote_id": "",
+    "method": "POST",
+    "uri": "/hello_world",
+    "parameters": {
+        "id": 1234,
+        "o": "mr"
+    }
+}
+{
+    "ts": "2023-10-18 11:33:12",
+    "severity": "WRN",
+    "host": "127.0.0.1:42069",
+    "remote_id": "",
+    "method": "POST",
+    "uri": "/hello_world",
+    "parameters": {
+        "id": 1234,
+        "o": "mr"
+    }
+}
+{
+    "ts": "2023-10-18 11:33:12",
+    "severity": "ERR",
+    "host": "127.0.0.1:42069",
+    "remote_id": "",
+    "method": "POST",
+    "uri": "/hello_world",
+    "parameters": {
+        "id": 1234,
+        "o": "mr"
+    }
+}
+{
+    "ts": "2023-10-18 11:33:12",
+    "severity": "CRT",
+    "host": "127.0.0.1:42069",
+    "remote_id": "",
+    "method": "POST",
+    "uri": "/hello_world",
+    "parameters": {
+        "id": 1234,
+        "o": "mr"
+    }
+}
+{
+    "ts": "2023-10-18 11:33:12",
+    "severity": "PNC",
+    "host": "127.0.0.1:42069",
+    "remote_id": "",
+    "method": "POST",
+    "uri": "/hello_world",
+    "parameters": {
+        "id": 1234,
+        "o": "mr"
+    }
+}

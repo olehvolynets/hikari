@@ -3,7 +3,8 @@ package main
 import (
 	"encoding/json"
 	"flag"
-	"fmt"
+	"io"
+	"log"
 	"os"
 
 	"github.com/olehvolynets/sylphy"
@@ -14,7 +15,7 @@ var configFilePath = flag.String("config", ".sylphy.config.yml", "path to sylphy
 
 func check(err error) {
 	if err != nil {
-		panic(fmt.Errorf("sylphy: %w", err))
+		log.Fatalf("sylphy: %w", err)
 	}
 }
 
@@ -27,16 +28,38 @@ func main() {
 	scheme, err := scheme.New(confFile)
 	check(err)
 
-	s := sylphy.New(scheme)
+	app := sylphy.New(scheme)
 
-	payloadFile, err := os.ReadFile("sample.json")
-	check(err)
+	if len(flag.Args()) == 0 {
+		decoder := json.NewDecoder(os.Stdin)
+		err := decodingLoop(app, decoder)
+		check(err)
+	} else {
+		for _, fileName := range flag.Args() {
+			f, err := os.Open(fileName)
+			check(err)
 
-	payload := make([]map[string]any, 0)
-	err = json.Unmarshal(payloadFile, &payload)
-	check(err)
+			decoder := json.NewDecoder(f)
 
-	for _, row := range payload {
-		s.Print(row)
+			decodingLoop(app, decoder)
+		}
 	}
+}
+
+func decodingLoop(app *sylphy.Sylphy, decoder *json.Decoder) error {
+	for {
+		payload := make(map[string]any)
+
+		if err := decoder.Decode(&payload); err != nil {
+			if err == io.EOF {
+				break
+			}
+
+			return err
+		}
+
+		app.Print(payload)
+	}
+
+	return nil
 }
