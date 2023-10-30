@@ -71,7 +71,7 @@ func formatInlineObject(buf *bytes.Buffer, keys []string, obj map[string]any) {
 
 		val, ok := obj[key]
 		if ok {
-			strVal = colorizeValue(val)
+			strVal = colorizeValue(val, false)
 		} else {
 			strVal = prettyNull
 		}
@@ -97,7 +97,7 @@ func formatMultilineObject(buf *bytes.Buffer, keys []string, obj map[string]any)
 
 		val, ok := obj[key]
 		if ok {
-			strVal = colorizeValue(val)
+			strVal = colorizeValue(val, true)
 		} else {
 			strVal = prettyNull
 		}
