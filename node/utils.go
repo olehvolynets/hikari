@@ -2,6 +2,8 @@ package node
 
 import (
 	"fmt"
+	"log"
+	"reflect"
 
 	"github.com/fatih/color"
 )
@@ -28,7 +30,7 @@ var (
 	prettyRightBracket = operatorColor.Sprint("]")
 )
 
-func colorizeValue(val any) string {
+func colorizeValue(val any, multiline bool) string {
 	switch val.(type) {
 	case int64:
 		return numberColor.Sprintf("%d", val)
@@ -41,6 +43,21 @@ func colorizeValue(val any) string {
 	case nil:
 		return prettyNull
 	default:
-		return fmt.Sprintf("%v", val)
+		switch reflect.TypeOf(val).Kind() {
+		case reflect.Slice:
+			sliceVal, ok := val.([]any)
+			if !ok {
+				log.Println("wtf?")
+			}
+			return formatSlice(sliceVal, multiline)
+		case reflect.Map:
+			mapVal, ok := val.(map[string]any)
+			if !ok {
+				log.Println("wtf?")
+			}
+			return formatObject(mapVal, multiline)
+		default:
+			return fmt.Sprintf("%v", val)
+		}
 	}
 }

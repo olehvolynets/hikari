@@ -55,7 +55,7 @@ func formatInlineSlice(buf *bytes.Buffer, s []any) {
 	operatorColor.Fprint(buf, "[")
 
 	for idx, item := range s {
-		fmt.Fprint(buf, colorizeValue(item))
+		fmt.Fprint(buf, colorizeValue(item, false))
 
 		if idx < len(s)-1 {
 			operatorColor.Fprint(buf, inlineSeparator)
@@ -69,7 +69,7 @@ func formatMultilineSlice(buf *bytes.Buffer, s []any) {
 	operatorColor.Fprint(buf, "[\n")
 
 	for idx, item := range s {
-		fmt.Fprintf(buf, "\t%s", colorizeValue(item))
+		fmt.Fprintf(buf, "\t%s", colorizeValue(item, true))
 
 		if idx < len(s)-1 {
 			operatorColor.Fprint(buf, multilineSeparator)

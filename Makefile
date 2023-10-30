@@ -14,7 +14,7 @@ run:
 
 .PHONY: run_sample
 run_sample:
-	@$(tmp_bin) -config sample_config.yml test/sample.json
+	@go run $(entrypoint) -config sample_config.yml test/sample.json
 
 .PHONY: test
 test:
