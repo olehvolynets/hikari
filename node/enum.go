@@ -1,23 +1,19 @@
 package node
 
 import (
-	"fmt"
+	"log"
 
 	"github.com/fatih/color"
+
+	"github.com/olehvolynets/sylphy/render"
 	"github.com/olehvolynets/sylphy/scheme"
 )
 
 type EnumNode struct {
-	AttrName  string
-	Optional  bool
+	baseT
+
 	Colorizer *color.Color
-
-	Prefix         string
-	PrefixInherit  bool
-	Postfix        string
-	PostfixInherit bool
-
-	Values map[string]*LiteralNode
+	Values    map[string]*LiteralNode
 }
 
 func NewEnumNode(si *scheme.SchemeItem) *EnumNode {
@@ -25,21 +21,14 @@ func NewEnumNode(si *scheme.SchemeItem) *EnumNode {
 		panic("sylphy: only enum strings are supported")
 	}
 
+	enumColor := si.ToColor()
 	en := &EnumNode{
-		AttrName:  si.Name,
-		Optional:  si.Optional,
-		Colorizer: si.ToColor(),
+		baseT: baseT{
+			AttrName: si.Name,
+			Optional: si.Optional,
+		},
+		Colorizer: enumColor,
 		Values:    make(map[string]*LiteralNode),
-	}
-
-	if si.Prefix != nil {
-		en.Prefix = si.Prefix.Literal
-		en.PrefixInherit = si.Prefix.Inherit
-	}
-
-	if si.Postfix != nil {
-		en.Postfix = si.Postfix.Literal
-		en.PostfixInherit = si.Postfix.Inherit
 	}
 
 	for _, variant := range si.Enum {
@@ -47,101 +36,47 @@ func NewEnumNode(si *scheme.SchemeItem) *EnumNode {
 			panic("sylphy: enum variant must have value")
 		}
 
-		c := variant.ToColor()
-		lit := c.Sprint(variant.Value)
+		variantColor := variant.ToColor()
+		prefixColor, postfixColor := enumColor, enumColor
+		if si.Prefix.Inherit {
+			prefixColor = variantColor
+		}
+		if si.Postfix.Inherit {
+			postfixColor = variantColor
+		}
 
-		en.Values[variant.Value] = &LiteralNode{Literal: lit, Colorizer: c}
+		prefix := prefixColor.Sprint(si.Prefix.Literal)
+		postfix := postfixColor.Sprint(si.Postfix.Literal)
+
+		lit := prefix + variantColor.Sprint(variant.Value) + postfix
+
+		en.Values[variant.Value] = &LiteralNode{Literal: lit, Colorizer: variantColor}
 	}
 
 	return en
 }
 
-func (e *EnumNode) Print(entry map[string]any) (int, error) {
-	var written int
-	var resultErr error = nil
-	var err error
-	var val any
-	var strVal string
-	var ok bool
-	var variant *LiteralNode
-	var i int
-
-	if !e.PrefixInherit {
-		i, err = e.Colorizer.Print(e.Prefix)
-		if err != nil {
-			resultErr = err
-			goto exit
-		}
-
-		written += i
+func (e *EnumNode) Print(entry map[string]any, r *render.Renderer) (int, error) {
+	val, shouldPrint := e.findSelf(entry)
+	if !shouldPrint {
+		return 0, nil
 	}
 
-	val, ok = entry[e.AttrName]
-	if !ok {
-		if e.Optional {
-			goto exit
+	switch v := val.(type) {
+	case string:
+		variant, ok := e.Values[v]
+		if !ok {
+			r.Printf("%s=<ERRUNKNVAL> - %s", e.AttrName, v)
 		}
 
-		i, err = fmt.Printf("%s=<ERRNOVAL>", e.AttrName)
-		if err != nil {
-			resultErr = err
-			goto exit
-		}
-
-		written += i
+		variant.Print(entry, r)
+	case error:
+		log.Println(v)
+		return 0, nil
+	default:
+		log.Println("<enum value is not a string>")
+		return 0, nil
 	}
 
-	strVal, ok = val.(string)
-	if !ok {
-		i, err = fmt.Print("<enum value is not a string>")
-		if err != nil {
-			resultErr = err
-			goto exit
-		}
-
-		written += i
-		goto exit
-	}
-
-	variant, ok = e.Values[strVal]
-	if !ok {
-		i, err = fmt.Printf("%s=<ERRUNKNVAL> - %s", e.AttrName, strVal)
-		if err != nil {
-			resultErr = err
-			goto exit
-		}
-
-		written += i
-	}
-
-	if e.PrefixInherit {
-		variant.Colorizer.Print(e.Prefix)
-	}
-
-	i, err = variant.Print(entry)
-	if err != nil {
-		resultErr = err
-		goto exit
-	}
-	written += i
-
-	if !e.PostfixInherit {
-		i, err = e.Colorizer.Print(e.Postfix)
-		if err != nil {
-			resultErr = err
-			goto exit
-		}
-
-		written += i
-	} else {
-		i, err = variant.Colorizer.Print(e.Postfix)
-		if err != nil {
-			resultErr = err
-			goto exit
-		}
-		written += i
-	}
-
-exit:
-	return written, resultErr
+	return 0, nil
 }

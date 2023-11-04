@@ -1,32 +1,32 @@
 package sylphy
 
 import (
-	"fmt"
+	"log"
 
 	"github.com/olehvolynets/sylphy/node"
+	"github.com/olehvolynets/sylphy/render"
 	"github.com/olehvolynets/sylphy/scheme"
 )
 
 type Sylphy struct {
-	sequence []Node
-}
-
-type Node interface {
-	Print(entry map[string]any) (int, error)
+	renderer *render.Renderer
+	sequence []node.Base
 }
 
 func New(sc *scheme.Scheme) *Sylphy {
-	s := &Sylphy{}
+	s := &Sylphy{
+		renderer: render.NewRenderer(),
+	}
 
 	for _, item := range sc.Items {
-		var n Node
+		var n node.Base
 
 		if item.Literal != "" {
 			n = node.NewLiteralNode(item)
 		} else if len(item.Enum) > 0 {
 			n = node.NewEnumNode(item)
 		} else {
-			n = newAttrNode(item)
+			n = newAttrNode(item, s.renderer)
 		}
 
 		s.sequence = append(s.sequence, n)
@@ -35,12 +35,12 @@ func New(sc *scheme.Scheme) *Sylphy {
 	return s
 }
 
-func newAttrNode(scheme *scheme.SchemeItem) Node {
+func newAttrNode(scheme *scheme.SchemeItem, r *render.Renderer) node.Base {
 	switch scheme.Type {
 	case "array":
-		return node.NewArrayNode(scheme)
+		return node.NewArrayNode(scheme, r)
 	case "object":
-		return node.NewObjectNode(scheme)
+		return node.NewObjectNode(scheme, r)
 	default:
 		return node.NewAttributeNode(scheme)
 	}
@@ -48,11 +48,11 @@ func newAttrNode(scheme *scheme.SchemeItem) Node {
 
 func (s *Sylphy) Print(entry map[string]any) {
 	for _, n := range s.sequence {
-		_, err := n.Print(entry)
+		_, err := n.Print(entry, s.renderer)
 		if err != nil {
-			fmt.Println("sylphy: output err %w", err)
+			log.Println("sylphy: output err %w", err)
 		}
 	}
 
-	fmt.Println()
+	s.renderer.Endl()
 }
