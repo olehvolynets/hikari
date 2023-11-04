@@ -1,0 +1,15 @@
+{
+    "v": [
+        6,
+        false,
+        "asldkj",
+        null,
+        [1, "two", 3],
+        "-- gap --",
+        {
+            "foo": 1,
+            "bar": "buz",
+            "arr": [69, 420, null]
+        }
+    ]
+}

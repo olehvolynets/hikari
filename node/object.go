@@ -1,116 +1,52 @@
 package node
 
 import (
-	"bytes"
 	"fmt"
 
-	sch "github.com/olehvolynets/sylphy/scheme"
-	"golang.org/x/exp/slices"
-)
-
-var (
-	keyValObjFormat         = "%s" + operatorColor.Sprint(":") + " %s"
-	multilinKeyValObjFormat = "\t" + keyValObjFormat
+	"github.com/olehvolynets/sylphy/node/format"
+	"github.com/olehvolynets/sylphy/render"
+	"github.com/olehvolynets/sylphy/scheme"
 )
 
 type ObjectNode struct {
-	AttrName  string
-	Optional  bool
-	Multiline bool
+	baseT
+
+	formatter format.Formatter
 }
 
-func NewObjectNode(scheme *sch.SchemeItem) *ObjectNode {
+func NewObjectNode(sch *scheme.SchemeItem, r *render.Renderer) *ObjectNode {
+	rendCfg := render.Config{ElementSeparator: ",", KeyValSeparator: ": "}
+	if sch.Multiline {
+		rendCfg.LineSeparator = "\n"
+		rendCfg.IndentChar = "\t"
+	} else {
+		rendCfg.LineSeparator = " "
+		rendCfg.IndentChar = ""
+	}
+
+	mapRenderer := r.WithConfig(rendCfg)
+
 	return &ObjectNode{
-		AttrName:  scheme.Name,
-		Optional:  scheme.Optional,
-		Multiline: scheme.Multiline,
+		baseT: baseT{
+			AttrName: sch.Name,
+			Optional: sch.Optional,
+		},
+		formatter: format.NewObjectFormatter(mapRenderer),
 	}
 }
 
-func (n *ObjectNode) Print(entry map[string]any) (int, error) {
-	val, ok := entry[n.AttrName]
+func (n *ObjectNode) Print(entry map[string]any, r *render.Renderer) (int, error) {
+	val, ok := n.findSelf(entry)
 	if !ok {
-		if n.Optional {
-			return 0, nil
-		}
-
-		return fmt.Printf("%s - ERRMISS", n.AttrName)
+		return r.Print(val)
 	}
 
 	mapVal, ok := val.(map[string]any)
 	if !ok {
-		return fmt.Printf("{ ERRNOTARR %s %v }", n.AttrName, val)
+		return r.Print(fmt.Errorf("%s - ERRNOTMAP - %v", n.AttrName, val))
 	}
 
-	return fmt.Print(formatObject(mapVal, n.Multiline))
-}
+	n.formatter.Format(mapVal)
 
-func formatObject(obj map[string]any, multiline bool) string {
-	buf := bytes.NewBuffer([]byte{})
-
-	keys := make([]string, 0, len(obj))
-	for key := range obj {
-		keys = append(keys, key)
-	}
-	slices.Sort(keys)
-
-	if multiline {
-		formatMultilineObject(buf, keys, obj)
-	} else {
-		formatInlineObject(buf, keys, obj)
-	}
-
-	return buf.String()
-}
-
-func formatInlineObject(buf *bytes.Buffer, keys []string, obj map[string]any) {
-	operatorColor.Fprint(buf, prettyLeftBrace, " ")
-
-	for idx, key := range keys {
-		var strVal string
-
-		val, ok := obj[key]
-		if ok {
-			strVal = colorizeValue(val, false)
-		} else {
-			strVal = prettyNull
-		}
-
-		fmt.Fprintf(buf, "%s%s %s",
-			stringColor.Sprintf("%q", key),
-			prettyColon,
-			strVal)
-
-		if idx < len(keys)-1 {
-			operatorColor.Fprint(buf, inlineSeparator)
-		}
-	}
-
-	operatorColor.Fprint(buf, " ", prettyRightBrace)
-}
-
-func formatMultilineObject(buf *bytes.Buffer, keys []string, obj map[string]any) {
-	operatorColor.Fprint(buf, prettyLeftBrace, "\n")
-
-	for idx, key := range keys {
-		var strVal string
-
-		val, ok := obj[key]
-		if ok {
-			strVal = colorizeValue(val, true)
-		} else {
-			strVal = prettyNull
-		}
-
-		fmt.Fprintf(buf, "\t%s%s %s",
-			stringColor.Sprintf("%q", key),
-			prettyColon,
-			strVal)
-
-		if idx < len(keys)-1 {
-			operatorColor.Fprint(buf, multilineSeparator)
-		}
-	}
-
-	operatorColor.Fprint(buf, "\n", prettyRightBrace)
+	return 0, nil
 }

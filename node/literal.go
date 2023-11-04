@@ -1,13 +1,15 @@
 package node
 
 import (
-	"fmt"
-
 	"github.com/fatih/color"
+
+	"github.com/olehvolynets/sylphy/render"
 	"github.com/olehvolynets/sylphy/scheme"
 )
 
 type LiteralNode struct {
+	baseT
+
 	Literal   string
 	Colorizer *color.Color
 }
@@ -21,6 +23,6 @@ func NewLiteralNode(si *scheme.SchemeItem) *LiteralNode {
 	}
 }
 
-func (l *LiteralNode) Print(entry map[string]any) (int, error) {
-	return fmt.Print(l.Literal)
+func (l *LiteralNode) Print(entry map[string]any, r *render.Renderer) (int, error) {
+	return r.Print(l.Literal)
 }

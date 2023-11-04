@@ -40,7 +40,7 @@
 - literal: " "
 
 - name: method
-  fg: black
+  fg: white
   bg: hi-blue
   bold: true
   prefix:
