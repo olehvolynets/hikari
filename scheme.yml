@@ -1,0 +1,46 @@
+# BasicType
+#     Number | Bool | Nil | String
+#
+# ProcessedType
+#     DateTime
+#
+# Enum
+#
+# AggregateType
+#     Array | Object
+#
+# InputItem
+#     Event (JSON object)
+#     String (garbage/some log message)
+
+
+# Scheme
+#   SchemeItem[]
+#
+# SchemeItem
+#   EventSchemeItem | Event | Placeholder
+#
+# EventSchemeItem
+#   Literal | AttributeReference
+
+
+# Main scheme for the formatter, a list of tokens that are literals, fields, enums OR EVENTS.
+scheme:
+  - common: ts
+  - event: EventType
+  - placeholder: event
+  - placeholder: rest # items not yet consumed
+
+events:
+  - name: EventType
+    scheme: []
+
+common: []
+
+placeholders:
+  - name: event
+  - name: rest
+    type: object
+    multiline: true
+    prefix:
+      literal: "\n"
