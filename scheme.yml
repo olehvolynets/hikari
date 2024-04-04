@@ -38,7 +38,7 @@ events:
 common: []
 
 placeholders:
-  - name: event
+  - name: events
   - name: rest
     type: object
     multiline: true
