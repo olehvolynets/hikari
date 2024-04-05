@@ -1,8 +1,9 @@
 entrypoint=./cmd/sylphy
 tmp_bin=./tmp/bin/sylphy
+pkl_config=./pkl/Config.pkl
 
 .PHONY: default
-default: build run
+default: run
 
 .PHONY: build
 build:
@@ -10,11 +11,7 @@ build:
 
 .PHONY: run
 run:
-	@$(tmp_bin) -config sample_config.yml
-
-.PHONY: run_sample
-run_sample:
-	@go run $(entrypoint) -config sample_config.yml test/sample.json
+	@go run $(entrypoint)
 
 .PHONY: test
 test:
@@ -25,6 +22,10 @@ install:
 	@echo "Installing Sylphy..."
 	@go install $(entrypoint)
 	@echo "Success"
+
+.PHONY: pklgen
+pklgen:
+	@pkl-gen-go $(pkl_config)
 
 .PHONY: clean
 clean:

@@ -1,0 +1,7 @@
+@go.Package { name = "github.com/olehvolynets/sylphy/config" }
+module sylphy.Config
+
+import "package://pkg.pkl-lang.org/pkl-go/pkl.golang@0.6.0#/go.pkl"
+
+host: String
+port: UInt16
