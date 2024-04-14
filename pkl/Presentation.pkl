@@ -1,0 +1,19 @@
+@go.Package { name = "github.com/olehvolynets/sylphy/config/presentation" }
+module sylphy.config.Presentatin
+
+import "package://pkg.pkl-lang.org/pkl-go/pkl.golang@0.6.0#/go.pkl"
+
+typealias Color = "white" | "hi-white" |
+                  "black" | "hi-black" |
+                  "red" | "hi-red" |
+                  "green" | "hi-green" |
+                  "yellow" | "hi-yellow" |
+                  "blue" | "hi-blue" |
+                  "magenta" | "hi-magenta" |
+                  "cyan" | "hi-cyan"
+
+typealias Modifier = "bold" | "italic" | "underline" | "strikethrough" | "blink"
+
+fg: Color?
+bg: Color?
+modifiers: Listing<Modifier>

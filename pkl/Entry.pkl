@@ -1,0 +1,14 @@
+@go.Package { name = "github.com/olehvolynets/sylphy/config/entry" }
+module sylphy.config.Entry
+
+import "package://pkg.pkl-lang.org/pkl-go/pkl.golang@0.6.0#/go.pkl"
+
+import "./Presentation.pkl"
+
+class Attribute {
+    key: String
+    displayFormat: Listing<Presentation>
+}
+
+matcher: Mapping<String, String>
+presentFormat: Listing<Attribute>

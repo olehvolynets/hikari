@@ -2,8 +2,8 @@ entrypoint=./cmd/sylphy
 tmp_bin=./tmp/bin/sylphy
 pkl_config=./pkl/Config.pkl
 
-.PHONY: default
-default: run
+.PHONY: all
+all: run
 
 .PHONY: build
 build:
@@ -30,3 +30,5 @@ pklgen:
 .PHONY: clean
 clean:
 	rm $(tmp_bin)
+	rm -rf ./config
+	rm Config.pkl.go init.pkl.go

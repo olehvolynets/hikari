@@ -1,7 +1,13 @@
-@go.Package { name = "github.com/olehvolynets/sylphy/config" }
+@go.Package { name = "github.com/olehvolynets/sylphy" }
 module sylphy.Config
 
 import "package://pkg.pkl-lang.org/pkl-go/pkl.golang@0.6.0#/go.pkl"
 
-host: String
-port: UInt16
+import "./Presentation.pkl"
+import "./Enum.pkl"
+import "./Literal.pkl"
+import "./Entry.pkl"
+
+typealias Item = Entry | Literal
+
+items: Listing<Item>
