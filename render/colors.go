@@ -1,8 +1,8 @@
-package scheme
+package render
 
 import "github.com/fatih/color"
 
-var fgColors map[string]color.Attribute = map[string]color.Attribute{
+var FgColors map[string]color.Attribute = map[string]color.Attribute{
 	"white":      color.FgWhite,
 	"hi-white":   color.FgHiWhite,
 	"black":      color.FgBlack,
@@ -21,7 +21,7 @@ var fgColors map[string]color.Attribute = map[string]color.Attribute{
 	"hi-cyan":    color.FgHiCyan,
 }
 
-var bgColors map[string]color.Attribute = map[string]color.Attribute{
+var BgColors map[string]color.Attribute = map[string]color.Attribute{
 	"white":      color.BgWhite,
 	"hi-white":   color.BgHiWhite,
 	"black":      color.BgBlack,

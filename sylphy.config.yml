@@ -1,0 +1,44 @@
+# shared/reusable types.
+# To use a shared type it must be referencd `as: <name>`
+#  so with the example type it would be `as: severity`
+types:
+  - name: severity
+    type: enum
+    variants:
+      - name: DBG
+        display:
+          fg: orange
+          bold: true
+
+# type of events and scheme of their rendering
+events:
+  - name: ReqLog
+    matcher:
+      path: string
+    scheme:
+      - name: asdf
+        type: number
+        display:
+          fg: red
+      - literal: "\n"
+      - name: str
+        type: string
+        display:
+          bg: green
+      - literal: "\n"
+      - name: bl
+        type: bool
+        display:
+          bold: true
+      - literal: "\n"
+      - name: dyn_array
+        type: array
+      - literal: "\n"
+      - name: parameters
+        type: map
+      # - name: ts
+      #   type: datetime
+      # - name: severity
+      #   as: severity
+      # - name: path
+      # - special: rest
