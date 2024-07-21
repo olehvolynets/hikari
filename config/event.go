@@ -1,8 +1,6 @@
 package config
 
 import (
-	"log/slog"
-
 	"github.com/olehvolynets/sylphy/render"
 )
 
@@ -26,14 +24,14 @@ type EventHandler struct {
 	AttributeHandlers []render.Handler
 }
 
-func (h *EventHandler) Handle(ctx *render.Context) error {
-	slog.Debug("EventHandler", "h", *h)
-	for _, attrHandler := range h.AttributeHandlers {
-		err := attrHandler.Handle(ctx)
-		if err != nil {
-			return err
-		}
-	}
-
-	return nil
-}
+// func (h *EventHandler) Handle(ctx *render.Context) error {
+// 	slog.Debug("EventHandler", "h", *h)
+// 	for _, attrHandler := range h.AttributeHandlers {
+// 		err := attrHandler.Handle(ctx)
+// 		if err != nil {
+// 			return err
+// 		}
+// 	}
+//
+// 	return nil
+// }

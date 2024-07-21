@@ -1,6 +1,9 @@
 package render
 
-import "io"
+import (
+	"io"
+	"strings"
+)
 
 type Context struct {
 	Entry
@@ -17,4 +20,8 @@ func (ctx *Context) Indent() {
 
 func (ctx *Context) Dedent() {
 	ctx.IndentLevel -= 1
+}
+
+func (ctx *Context) CurrentIndent() string {
+	return strings.Repeat(ctx.IndentChar, ctx.IndentLevel)
 }

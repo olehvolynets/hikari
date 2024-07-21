@@ -1,30 +1,30 @@
 package sylphy
 
 type Config struct {
-	symbols
+	Symbols
 }
 
 func DefaultRuntimeConfig() Config {
 	return Config{
-		symbols: symbols{
-			arrayOpen:          "[",
-			arrayClose:         "]",
-			arrayItemSeparator: ", ",
-			mapOpen:            "[",
-			mapClose:           "]",
-			mapKVDivider:       ": ",
-			mapItemSeparator:   ", ",
+		Symbols: Symbols{
+			ArrayOpen:          "[",
+			ArrayClose:         "]",
+			ArrayItemSeparator: ", ",
+			MapOpen:            "[",
+			MapClose:           "]",
+			MapKVDivider:       ": ",
+			MapItemSeparator:   ", ",
 		},
 	}
 }
 
-type symbols struct {
-	arrayOpen          string
-	arrayClose         string
-	arrayItemSeparator string
+type Symbols struct {
+	ArrayOpen          string
+	ArrayClose         string
+	ArrayItemSeparator string
 
-	mapOpen          string
-	mapClose         string
-	mapKVDivider     string
-	mapItemSeparator string
+	MapOpen          string
+	MapClose         string
+	MapKVDivider     string
+	MapItemSeparator string
 }

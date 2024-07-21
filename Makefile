@@ -30,4 +30,3 @@ install:
 clean:
 	rm $(tmp_bin)
 	rm -rf ./config
-	rm Config.pkl.go init.pkl.go
