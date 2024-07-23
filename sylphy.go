@@ -6,24 +6,23 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"log/slog"
 
 	"github.com/olehvolynets/sylphy/config"
 )
 
 type Sylphy struct {
 	sink          io.Writer
-	eventHandlers []Handler
+	eventHandlers []*Handler
 }
 
 func NewSylphy(out io.Writer, cfg *config.Config) (*Sylphy, error) {
 	s := Sylphy{
 		sink:          out,
-		eventHandlers: make([]Handler, len(cfg.Events)),
+		eventHandlers: make([]*Handler, len(cfg.Events)),
 	}
 
 	for idx, evt := range cfg.Events {
-		s.eventHandlers[idx] = Handler{Event: evt}
+		s.eventHandlers[idx] = NewHandler(evt)
 	}
 
 	return &s, nil
@@ -68,9 +67,7 @@ func (app *Sylphy) Start(r io.Reader) error {
 		if handler != nil {
 			ctx := Context{W: app.sink, Entry: entry, IndentChar: "\t"}
 
-			if err := handler.Render(&ctx, entry); err != nil {
-				slog.Error(err.Error())
-			}
+			handler.Render(&ctx, entry)
 		}
 	}
 
@@ -80,7 +77,7 @@ func (app *Sylphy) Start(r io.Reader) error {
 func (app *Sylphy) MatchEvent(entry Entry) *Handler {
 	for _, handler := range app.eventHandlers {
 		if handler.Event.Match(entry) {
-			return &handler
+			return handler
 		}
 	}
 

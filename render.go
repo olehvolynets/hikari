@@ -19,7 +19,7 @@ var (
 var (
 	numberFormat Colorizer = color.New(color.FgHiRed)
 	stringFormat Colorizer = color.New(color.FgYellow)
-	boolFormat   Colorizer = color.New(color.FgMagenta)
+	boolFormat   Colorizer = color.New(color.FgBlue)
 	nullFormat   Colorizer = color.New(color.FgYellow, color.Bold)
 )
 
@@ -28,34 +28,62 @@ type Entry map[string]any
 type Colorizer = *color.Color
 
 type Handler struct {
-	Event config.Event
+	Event             config.Event
+	AttributeHandlers []AttributeHandler
 }
 
-func (h *Handler) Render(ctx *Context, val Entry) error {
-	if len(val) == 0 {
-		return nil
+func NewHandler(evt config.Event) *Handler {
+	handler := Handler{
+		Event:             evt,
+		AttributeHandlers: make([]AttributeHandler, len(evt.Scheme)),
 	}
 
-	for k, v := range val {
-		fmt.Fprintf(
-			ctx.W,
-			"%s%s: ",
-			ctx.CurrentIndent(),
-			k,
-		)
-		h.render(ctx, reflect.ValueOf(v))
-		fmt.Fprintln(ctx.W)
+	for idx, schemeItem := range evt.Scheme {
+		handler.AttributeHandlers[idx] = AttributeHandler{
+			Key:       schemeItem.Property.Name,
+			Literal:   schemeItem.Literal.Literal,
+			Colorizer: schemeItem.ToColor(),
+		}
+	}
+
+	return &handler
+}
+
+func (h *Handler) Render(ctx *Context, val Entry) {
+	if len(val) == 0 {
+		return
+	}
+
+	for _, attrHandler := range h.AttributeHandlers {
+		attrHandler.Render(ctx, val)
 	}
 
 	fmt.Fprintln(ctx.W)
-
-	return nil
 }
 
-func (h *Handler) render(ctx *Context, val reflect.Value) {
+type AttributeHandler struct {
+	Key     string
+	Literal string
+	Colorizer
+}
+
+func (h *AttributeHandler) Render(ctx *Context, val Entry) {
+	if len(val) == 0 {
+		return
+	}
+
+	if h.Literal != "" {
+		fmt.Fprint(ctx.W, h.Literal)
+	} else {
+		v := val[h.Key]
+		h.render(ctx, reflect.ValueOf(v))
+	}
+}
+
+func (h *AttributeHandler) render(ctx *Context, val reflect.Value) {
 	switch val.Kind() {
 	case reflect.Invalid:
-		fmt.Fprint(ctx.W, "<Invalid>")
+		h.Colorizer.Fprint(ctx.W, "<Invalid>")
 	case reflect.Interface:
 		if val.IsNil() {
 			h.renderNull(ctx)
@@ -69,9 +97,9 @@ func (h *Handler) render(ctx *Context, val reflect.Value) {
 	case reflect.Float32, reflect.Float64:
 		h.renderNumber(ctx, val.Float())
 	case reflect.Bool:
-		boolFormat.Fprint(ctx.W, val.Bool())
+		h.Colorizer.Fprint(ctx.W, val.Bool())
 	case reflect.String:
-		stringFormat.Fprintf(ctx.W, "%q", val.String())
+		h.Colorizer.Fprintf(ctx.W, "%q", val.String())
 	case reflect.Array, reflect.Slice:
 		h.renderArray(ctx, val)
 	case reflect.Map:
@@ -80,20 +108,20 @@ func (h *Handler) render(ctx *Context, val reflect.Value) {
 		if val.IsNil() {
 			h.renderNull(ctx)
 		} else {
-			fmt.Fprint(ctx.W, val.Kind())
+			h.Colorizer.Fprint(ctx.W, val.Kind())
 		}
 	}
 }
 
-func (h *Handler) renderNull(ctx *Context) {
+func (h *AttributeHandler) renderNull(ctx *Context) {
 	nullFormat.Fprint(ctx.W, "null")
 }
 
-func (h *Handler) renderNumber(ctx *Context, v any) {
+func (h *AttributeHandler) renderNumber(ctx *Context, v any) {
 	numberFormat.Fprint(ctx.W, v)
 }
 
-func (h *Handler) renderArray(ctx *Context, val reflect.Value) {
+func (h *AttributeHandler) renderArray(ctx *Context, val reflect.Value) {
 	fmt.Fprint(ctx.W, "[")
 	ctx.Indent()
 	if val.Len() > 0 {
@@ -110,7 +138,7 @@ func (h *Handler) renderArray(ctx *Context, val reflect.Value) {
 	fmt.Fprint(ctx.W, "]")
 }
 
-func (h *Handler) renderMap(ctx *Context, val reflect.Value) {
+func (h *AttributeHandler) renderMap(ctx *Context, val reflect.Value) {
 	fmt.Fprintln(ctx.W, "{")
 	ctx.Indent()
 	for _, key := range val.MapKeys() {
