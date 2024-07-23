@@ -1,4 +1,4 @@
-package render
+package sylphy
 
 import (
 	"errors"
@@ -6,6 +6,8 @@ import (
 	"reflect"
 
 	"github.com/fatih/color"
+
+	"github.com/olehvolynets/sylphy/config"
 )
 
 var (
@@ -14,12 +16,6 @@ var (
 	ErrNil          = errors.New("is nil")
 )
 
-type Entry map[string]any
-
-type Colorizer = *color.Color
-
-type Handler struct{}
-
 var (
 	numberFormat Colorizer = color.New(color.FgHiRed)
 	stringFormat Colorizer = color.New(color.FgYellow)
@@ -27,8 +23,30 @@ var (
 	nullFormat   Colorizer = color.New(color.FgYellow, color.Bold)
 )
 
-func (h *Handler) Render(ctx *Context, val any) error {
-	h.render(ctx, reflect.ValueOf(val))
+type Entry map[string]any
+
+type Colorizer = *color.Color
+
+type Handler struct {
+	Event config.Event
+}
+
+func (h *Handler) Render(ctx *Context, val Entry) error {
+	if len(val) == 0 {
+		return nil
+	}
+
+	for k, v := range val {
+		fmt.Fprintf(
+			ctx.W,
+			"%s%s: ",
+			ctx.CurrentIndent(),
+			k,
+		)
+		h.render(ctx, reflect.ValueOf(v))
+		fmt.Fprintln(ctx.W)
+	}
+
 	fmt.Fprintln(ctx.W)
 
 	return nil
@@ -37,7 +55,7 @@ func (h *Handler) Render(ctx *Context, val any) error {
 func (h *Handler) render(ctx *Context, val reflect.Value) {
 	switch val.Kind() {
 	case reflect.Invalid:
-		fmt.Fprint(ctx.W, val.Elem(), " (Invalid)")
+		fmt.Fprint(ctx.W, "<Invalid>")
 	case reflect.Interface:
 		if val.IsNil() {
 			h.renderNull(ctx)

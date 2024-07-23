@@ -1,4 +1,4 @@
-package render
+package config
 
 import "github.com/fatih/color"
 

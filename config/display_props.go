@@ -1,4 +1,4 @@
-package render
+package config
 
 import (
 	"github.com/fatih/color"
@@ -14,7 +14,7 @@ type DisplayProps struct {
 	Blink         bool   `yaml:"blink"`
 }
 
-func (dp *DisplayProps) ToColor() Colorizer {
+func (dp *DisplayProps) ToColor() *color.Color {
 	c := color.New()
 
 	if fg, ok := FgColors[dp.Fg]; ok {
@@ -37,5 +37,5 @@ func (dp *DisplayProps) ToColor() Colorizer {
 		c.Add(color.CrossedOut)
 	}
 
-	return Colorizer(c)
+	return c
 }

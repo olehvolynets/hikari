@@ -1,4 +1,4 @@
-package render
+package sylphy
 
 import (
 	"io"

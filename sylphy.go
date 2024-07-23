@@ -6,20 +6,24 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log/slog"
 
 	"github.com/olehvolynets/sylphy/config"
-	"github.com/olehvolynets/sylphy/render"
 )
 
-var ErrNilHandler = SylphyError{Err: errors.New("were about to pass nil as render.Handler")}
-
 type Sylphy struct {
-	sink io.Writer
+	sink          io.Writer
+	eventHandlers []Handler
 }
 
 func NewSylphy(out io.Writer, cfg *config.Config) (*Sylphy, error) {
 	s := Sylphy{
-		sink: out,
+		sink:          out,
+		eventHandlers: make([]Handler, len(cfg.Events)),
+	}
+
+	for idx, evt := range cfg.Events {
+		s.eventHandlers[idx] = Handler{Event: evt}
 	}
 
 	return &s, nil
@@ -32,8 +36,8 @@ func (app *Sylphy) Start(r io.Reader) error {
 	decoder := json.NewDecoder(buffReader)
 
 	for {
-		// var handler render.Handler
-		entry := make(map[string]any)
+		entry := make(Entry)
+		var handler *Handler
 
 		if err := decoder.Decode(&entry); errors.Is(err, io.EOF) {
 			// All readers are exhausted at this point.
@@ -50,79 +54,35 @@ func (app *Sylphy) Start(r io.Reader) error {
 				return err
 			}
 
-			// handler = &render.RawHandler{Value: line}
-
 			fmt.Fprintln(app.sink, line)
 			// Recreate decoder after processing the line that caused
 			//   the previous one to fail. It doesn't mean that the next line
 			//   will be parsed successfully, but in that case it will
 			//   be handled in the same maner.
 			decoder = json.NewDecoder(buffReader)
+		} else {
+			// No decoding errors branch.
+			handler = app.MatchEvent(entry)
 		}
-		// else {
-		// No decoding errors branch.
-		// TODO: match event
-		// handler = app.handlers[0]
-		// }
 
-		// if handler == nil {
-		// 	// Something definetely went wrong here.
-		// 	return ErrNilHandler
-		// }
+		if handler != nil {
+			ctx := Context{W: app.sink, Entry: entry, IndentChar: "\t"}
 
-		ctx := render.Context{W: app.sink, Entry: entry, IndentChar: "\t"}
-		// if err := handler.Handle(&ctx); err != nil {
-		// 	slog.Error(err.Error())
-		// }
-		new(render.Handler).Render(&ctx, entry)
+			if err := handler.Render(&ctx, entry); err != nil {
+				slog.Error(err.Error())
+			}
+		}
 	}
 
 	return nil
 }
 
-// func (s *Sylphy) MatchEvent(entry map[string]any) *config.Event {
-// 	// TODO: really match event
-// 	return &s.cfg.Events[0]
-// }
+func (app *Sylphy) MatchEvent(entry Entry) *Handler {
+	for _, handler := range app.eventHandlers {
+		if handler.Event.Match(entry) {
+			return &handler
+		}
+	}
 
-// func (s *Sylphy) createHandlers(c *config.Config) {
-// 	s.handlers = make([]render.Handler, 0, len(c.Events))
-//
-// 	for _, evt := range c.Events {
-// 		attrHandlers := make([]render.Handler, 0, len(evt.Scheme))
-//
-// 		for _, item := range evt.Scheme {
-// 			var attrHandler render.Handler
-//
-// 			if item.Literal.Literal != "" {
-// 				attrHandler = render.NewLiteralHandler(item.Literal.Literal, item.ToColor())
-// 			} else {
-// 				builder := s.handlerBuilder(item.Type)
-// 				attrHandler = builder(item.Name, false, item.ToColor())
-// 			}
-//
-// 			attrHandlers = append(attrHandlers, attrHandler)
-// 		}
-//
-// 		s.handlers = append(s.handlers, &config.EventHandler{
-// 			AttributeHandlers: attrHandlers,
-// 		})
-// 	}
-// }
-
-// func (s *Sylphy) handlerBuilder(t config.PropertyType) render.HandlerBuilder {
-// 	switch t {
-// 	case config.NumberType:
-// 		return render.NewNumberHandler
-// 	case config.StringType:
-// 		return render.NewStringHandler
-// 	case config.BoolType:
-// 		return render.NewBoolHandler
-// 	case config.ArrayType:
-// 		return render.NewArrayHandler
-// 	case config.MapType:
-// 		return render.NewMapHandler
-// 	default:
-// 		panic(fmt.Sprint("unknown (yet) PropertyType - ", string(t)))
-// 	}
-// }
+	return nil
+}
