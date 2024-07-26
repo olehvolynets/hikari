@@ -32,7 +32,7 @@ func main() {
 	}
 
 	// TODO: change to stdio
-	f, err := os.Open("tmp/tmp_size.txt")
+	f, err := os.Open("tmp/pyra_sample.txt")
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -16,29 +16,48 @@ events:
     matcher:
       event: RequestLog
     scheme:
-      - name: asdf
-        type: number
+      - name: ts
         display:
-          fg: red
-      - literal: "\n"
-      - name: str
-        type: string
+          fg: white
+      - literal: " "
+      - name: status
+      - literal: " "
+      - name: method
+      - literal: " "
+      - name: path
+      - literal: " "
+      - name: took
         display:
-          bg: green
-      - literal: "\n"
-      - name: bl
-        type: bool
-        display:
+          fg: white
           bold: true
-      - literal: "\n"
-      - name: dyn_array
-        type: array
-      - literal: "\n"
-      - name: parameters
-        type: map
       # - name: ts
       #   type: datetime
       # - name: severity
       #   as: severity
       # - name: path
       # - special: rest
+  - name: ServerShutdown
+    matcher:
+      event: ServerShutdown
+    scheme:
+      - name: ts
+      - literal: " "
+      - name: msg
+  - name: ServerStop
+    matcher:
+      event: ServerStop
+    scheme:
+      - name: ts
+      - literal: " "
+      - name: event
+  - name: DBTrace
+    matcher:
+      event: DBTrace
+    scheme:
+      - name: ts
+      - literal: " "
+      - name: query
+      - literal: " ["
+      - name: args
+      - literal: "] "
+      - name: took
