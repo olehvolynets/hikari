@@ -53,7 +53,7 @@ func (app *Sylphy) Start(r io.Reader) error {
 				return err
 			}
 
-			fmt.Fprintln(app.sink, line)
+			fmt.Fprint(app.sink, line)
 			// Recreate decoder after processing the line that caused
 			//   the previous one to fail. It doesn't mean that the next line
 			//   will be parsed successfully, but in that case it will
