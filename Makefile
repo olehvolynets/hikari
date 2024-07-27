@@ -1,5 +1,5 @@
-entrypoint=./cmd/sylphy
-tmp_bin=./tmp/bin/sylphy
+entrypoint=./cmd/hikari
+tmp_bin=./tmp/bin/hikari
 
 .PHONY: all
 all: run
@@ -14,7 +14,7 @@ run:
 
 .PHONY: debug
 debug:
-	@SYLPHY_LOG_LEVEL=debug go run $(entrypoint)
+	@HIKARI_LOG_LEVEL=debug go run $(entrypoint)
 
 .PHONY: test
 test:
@@ -22,7 +22,7 @@ test:
 
 .PHONY: install
 install:
-	@echo "Installing Sylphy..."
+	@echo "Installing Hikari..."
 	@go install $(entrypoint)
 	@echo "Success"
 

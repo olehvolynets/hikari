@@ -1,4 +1,4 @@
-package sylphy
+package hikari
 
 type Config struct {
 	Symbols

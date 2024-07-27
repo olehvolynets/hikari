@@ -1,4 +1,4 @@
-module github.com/olehvolynets/sylphy
+module github.com/olehvolynets/hikari
 
 go 1.22.5
 

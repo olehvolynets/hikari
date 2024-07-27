@@ -1,4 +1,4 @@
-package sylphy
+package hikari
 
 import (
 	"errors"
@@ -7,7 +7,7 @@ import (
 
 	"github.com/fatih/color"
 
-	"github.com/olehvolynets/sylphy/config"
+	"github.com/olehvolynets/hikari/config"
 )
 
 var (

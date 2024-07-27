@@ -5,12 +5,12 @@ import (
 	"log/slog"
 	"os"
 
-	"github.com/olehvolynets/sylphy"
+	"github.com/olehvolynets/hikari"
 )
 
-const logLevelEnvKey = "SYLPHY_LOG_LEVEL"
+const logLevelEnvKey = "HIKARI_LOG_LEVEL"
 
-var ErrUnknownLogLevel = sylphy.SylphyError{Err: errors.New("unknown log level")}
+var ErrUnknownLogLevel = hikari.HikariError{Err: errors.New("unknown log level")}
 
 func init() {
 	slog.SetLogLoggerLevel(slog.LevelWarn)

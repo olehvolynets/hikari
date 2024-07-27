@@ -1,4 +1,4 @@
-package sylphy
+package hikari
 
 import (
 	"bufio"
@@ -7,16 +7,16 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/olehvolynets/sylphy/config"
+	"github.com/olehvolynets/hikari/config"
 )
 
-type Sylphy struct {
+type Hikari struct {
 	sink          io.Writer
 	eventHandlers []*Handler
 }
 
-func NewSylphy(out io.Writer, cfg *config.Config) (*Sylphy, error) {
-	s := Sylphy{
+func NewHikari(out io.Writer, cfg *config.Config) (*Hikari, error) {
+	s := Hikari{
 		sink:          out,
 		eventHandlers: make([]*Handler, len(cfg.Events)),
 	}
@@ -28,7 +28,7 @@ func NewSylphy(out io.Writer, cfg *config.Config) (*Sylphy, error) {
 	return &s, nil
 }
 
-func (app *Sylphy) Start(r io.Reader) error {
+func (app *Hikari) Start(r io.Reader) error {
 	// Has to be bufio.Reader to be able to read till the end of the line.
 	buffReader := bufio.NewReader(r)
 
@@ -74,7 +74,7 @@ func (app *Sylphy) Start(r io.Reader) error {
 	return nil
 }
 
-func (app *Sylphy) MatchEvent(entry Entry) *Handler {
+func (app *Hikari) MatchEvent(entry Entry) *Handler {
 	for _, handler := range app.eventHandlers {
 		if handler.Event.Match(entry) {
 			return handler

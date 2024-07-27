@@ -1,28 +1,28 @@
-package sylphy
+package hikari
 
 import (
 	"fmt"
 	"log"
 )
 
-type SylphyError struct {
+type HikariError struct {
 	Err error
 }
 
-func (se SylphyError) Error() string {
+func (se HikariError) Error() string {
 	if se.Err == nil {
-		return "sylphy: unspecified error"
+		return "hikari: unspecified error"
 	}
 
-	return fmt.Sprintf("sylphy: %s", se.Err.Error())
+	return fmt.Sprintf("hikari: %s", se.Err.Error())
 }
 
 func Fatal(e error) {
-	log.Fatal(SylphyError{e})
+	log.Fatal(HikariError{e})
 }
 
 func FatalMsg(msg string, e error) {
-	// NOTE: do not wrap in SylphyError here
+	// NOTE: do not wrap in HikariError here
 	//  will be done inside Fatal().
 	wrappedErr := fmt.Errorf("%s - %w", msg, e)
 	Fatal(wrappedErr)
