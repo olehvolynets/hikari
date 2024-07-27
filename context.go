@@ -6,8 +6,6 @@ import (
 )
 
 type Context struct {
-	Entry
-
 	IndentLevel int
 	IndentChar  string
 

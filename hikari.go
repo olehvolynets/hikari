@@ -12,17 +12,17 @@ import (
 
 type Hikari struct {
 	sink          io.Writer
-	eventHandlers []*Handler
+	eventHandlers []*EventHandler
 }
 
 func NewHikari(out io.Writer, cfg *config.Config) (*Hikari, error) {
 	s := Hikari{
 		sink:          out,
-		eventHandlers: make([]*Handler, len(cfg.Events)),
+		eventHandlers: make([]*EventHandler, len(cfg.Events)),
 	}
 
 	for idx, evt := range cfg.Events {
-		s.eventHandlers[idx] = NewHandler(evt)
+		s.eventHandlers[idx] = NewEventHandler(evt)
 	}
 
 	return &s, nil
@@ -36,7 +36,7 @@ func (app *Hikari) Start(r io.Reader) error {
 
 	for {
 		entry := make(Entry)
-		var handler *Handler
+		var handler *EventHandler
 
 		if err := decoder.Decode(&entry); errors.Is(err, io.EOF) {
 			// All readers are exhausted at this point.
@@ -65,7 +65,7 @@ func (app *Hikari) Start(r io.Reader) error {
 		}
 
 		if handler != nil {
-			ctx := Context{W: app.sink, Entry: entry, IndentChar: "\t"}
+			ctx := Context{W: app.sink, IndentChar: "\t"}
 
 			handler.Render(&ctx, entry)
 		}
@@ -74,7 +74,7 @@ func (app *Hikari) Start(r io.Reader) error {
 	return nil
 }
 
-func (app *Hikari) MatchEvent(entry Entry) *Handler {
+func (app *Hikari) MatchEvent(entry Entry) *EventHandler {
 	for _, handler := range app.eventHandlers {
 		if handler.Event.Match(entry) {
 			return handler

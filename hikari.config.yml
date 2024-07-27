@@ -16,11 +16,15 @@ events:
     matcher:
       event: RequestLog
     scheme:
+      - name: asdf
+      - literal: " "
       - name: ts
         display:
           fg: white
       - literal: " "
       - name: status
+        display:
+          fg: green
       - literal: " "
       - name: method
       - literal: " "
@@ -28,7 +32,6 @@ events:
       - literal: " "
       - name: took
         display:
-          fg: white
           bold: true
       # - name: ts
       #   type: datetime
@@ -57,7 +60,11 @@ events:
       - name: ts
       - literal: " "
       - name: query
+        display:
+          fg: magenta
       - literal: " ["
       - name: args
       - literal: "] "
       - name: took
+      - literal: " "
+      - name: error

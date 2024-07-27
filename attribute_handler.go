@@ -1,69 +1,12 @@
 package hikari
 
 import (
-	"errors"
 	"fmt"
 	"reflect"
-
-	"github.com/fatih/color"
-
-	"github.com/olehvolynets/hikari/config"
 )
-
-var (
-	ErrTypeMismatch = errors.New("type mismatch")
-	ErrMissing      = errors.New("value missing")
-	ErrNil          = errors.New("is nil")
-)
-
-var (
-	numberFormat Colorizer = color.New(color.FgHiRed)
-	stringFormat Colorizer = color.New(color.FgYellow)
-	boolFormat   Colorizer = color.New(color.FgBlue)
-	nullFormat   Colorizer = color.New(color.FgYellow, color.Bold)
-)
-
-type Entry map[string]any
-
-type Colorizer = *color.Color
-
-type Handler struct {
-	Event             config.Event
-	AttributeHandlers []AttributeHandler
-}
-
-func NewHandler(evt config.Event) *Handler {
-	handler := Handler{
-		Event:             evt,
-		AttributeHandlers: make([]AttributeHandler, len(evt.Scheme)),
-	}
-
-	for idx, schemeItem := range evt.Scheme {
-		handler.AttributeHandlers[idx] = AttributeHandler{
-			Key:       schemeItem.Property.Name,
-			Literal:   schemeItem.Literal.Literal,
-			Colorizer: schemeItem.ToColor(),
-		}
-	}
-
-	return &handler
-}
-
-func (h *Handler) Render(ctx *Context, val Entry) {
-	if len(val) == 0 {
-		return
-	}
-
-	for _, attrHandler := range h.AttributeHandlers {
-		attrHandler.Render(ctx, val)
-	}
-
-	fmt.Fprintln(ctx.W)
-}
 
 type AttributeHandler struct {
-	Key     string
-	Literal string
+	Key string
 	Colorizer
 }
 
@@ -72,18 +15,18 @@ func (h *AttributeHandler) Render(ctx *Context, val Entry) {
 		return
 	}
 
-	if h.Literal != "" {
-		fmt.Fprint(ctx.W, h.Literal)
-	} else {
-		v := val[h.Key]
-		h.render(ctx, reflect.ValueOf(v))
-	}
+	v := val[h.Key]
+	h.render(ctx, reflect.ValueOf(v))
 }
 
 func (h *AttributeHandler) render(ctx *Context, val reflect.Value) {
 	switch val.Kind() {
 	case reflect.Invalid:
-		h.Colorizer.Fprint(ctx.W, "<Invalid>")
+		h.renderNull(ctx)
+		// if val.Interface() == nil {
+		// }
+		// h.Colorizer.Fprint(ctx.W, "<Invalid>")
+		// fmt.Fprint(ctx.W, "<Invalid>")
 	case reflect.Interface:
 		if val.IsNil() {
 			h.renderNull(ctx)
@@ -99,7 +42,7 @@ func (h *AttributeHandler) render(ctx *Context, val reflect.Value) {
 	case reflect.Bool:
 		h.Colorizer.Fprint(ctx.W, val.Bool())
 	case reflect.String:
-		h.Colorizer.Fprintf(ctx.W, "%q", val.String())
+		h.renderString(ctx, val.String())
 	case reflect.Array, reflect.Slice:
 		h.renderArray(ctx, val)
 	case reflect.Map:
@@ -118,7 +61,19 @@ func (h *AttributeHandler) renderNull(ctx *Context) {
 }
 
 func (h *AttributeHandler) renderNumber(ctx *Context, v any) {
-	numberFormat.Fprint(ctx.W, v)
+	if h.Colorizer == nil {
+		fmt.Fprintf(ctx.W, "%s", v)
+	} else {
+		h.Colorizer.Fprint(ctx.W, v)
+	}
+}
+
+func (h *AttributeHandler) renderString(ctx *Context, v any) {
+	if h.Colorizer == nil {
+		fmt.Fprintf(ctx.W, "%s", v)
+	} else {
+		h.Colorizer.Fprintf(ctx.W, "%s", v)
+	}
 }
 
 func (h *AttributeHandler) renderArray(ctx *Context, val reflect.Value) {

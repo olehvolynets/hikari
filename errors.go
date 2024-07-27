@@ -1,8 +1,15 @@
 package hikari
 
 import (
+	"errors"
 	"fmt"
 	"log"
+)
+
+var (
+	ErrTypeMismatch = errors.New("type mismatch")
+	ErrMissing      = errors.New("value missing")
+	ErrNil          = errors.New("is nil")
 )
 
 type HikariError struct {

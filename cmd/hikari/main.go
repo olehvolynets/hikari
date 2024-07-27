@@ -3,7 +3,6 @@ package main
 import (
 	"flag"
 	"log"
-	"log/slog"
 	"os"
 
 	"github.com/olehvolynets/hikari"
@@ -24,7 +23,7 @@ func main() {
 	if err != nil {
 		hikari.FatalMsg("failed to load config", err)
 	}
-	slog.Debug("Config", "cfg", *cfg)
+	// slog.Debug("Config", "cfg", *cfg)
 
 	app, err := hikari.NewHikari(os.Stdout, cfg)
 	if err != nil {
