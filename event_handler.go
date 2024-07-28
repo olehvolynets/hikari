@@ -41,6 +41,7 @@ func NewEventHandler(evt config.Event) *EventHandler {
 				Key:       schemeItem.Name,
 				Skip:      schemeItem.Skip,
 				Optional:  schemeItem.Optional,
+				Type:      schemeItem.Type,
 				Colorizer: schemeItem.ToColor(),
 			}
 

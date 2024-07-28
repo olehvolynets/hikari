@@ -3,12 +3,16 @@ package hikari
 import (
 	"fmt"
 	"reflect"
+	"time"
+
+	"github.com/olehvolynets/hikari/config"
 )
 
 type AttributeHandler struct {
 	Key      string
 	Skip     bool
 	Optional bool
+	Type     config.PropertyType
 	Prefix   *Decorator
 	Postfix  *Decorator
 	Colorizer
@@ -43,7 +47,7 @@ func (h *AttributeHandler) Render(ctx *Context, val Entry) {
 	}
 
 	h.renderDecorator(ctx, h.Prefix)
-	h.render(ctx, reflect.ValueOf(v))
+	h.render(ctx, reflect.ValueOf(h.typeConvert(v)))
 	h.renderDecorator(ctx, h.Postfix)
 }
 
@@ -158,5 +162,19 @@ func (h *AttributeHandler) renderDecorator(ctx *Context, d *Decorator) {
 		h.Colorizer.Fprint(ctx.W, d.Literal)
 	default:
 		fmt.Fprint(ctx.W, d.Literal)
+	}
+}
+
+func (h *AttributeHandler) typeConvert(v any) any {
+	switch h.Type {
+	case config.DurationType:
+		vFloat, ok := v.(float64)
+		if ok {
+			return time.Duration(vFloat).String()
+		} else {
+			return v
+		}
+	default:
+		return v
 	}
 }

@@ -9,12 +9,14 @@ import (
 type PropertyType string
 
 const (
-	NumberType PropertyType = "number"
-	StringType PropertyType = "string"
-	BoolType   PropertyType = "bool"
-	ArrayType  PropertyType = "array"
-	MapType    PropertyType = "map"
-	EnumType   PropertyType = "enum"
+	ArrayType    PropertyType = "array"
+	BoolType     PropertyType = "bool"
+	DateTimeType PropertyType = "datetime"
+	DurationType PropertyType = "duration"
+	EnumType     PropertyType = "enum"
+	MapType      PropertyType = "map"
+	NumberType   PropertyType = "number"
+	StringType   PropertyType = "string"
 )
 
 func (s *PropertyType) UnmarshalYAML(node *yaml.Node) error {
@@ -31,6 +33,10 @@ func (s *PropertyType) UnmarshalYAML(node *yaml.Node) error {
 		*s = MapType
 	case "enum":
 		*s = EnumType
+	case "datetime":
+		*s = DateTimeType
+	case "duration":
+		*s = DurationType
 	default:
 		return &ErrUnknownPropertyType{Value: node.Value}
 	}
