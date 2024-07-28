@@ -22,6 +22,9 @@ type Decorator struct {
 func (h *AttributeHandler) Render(ctx *Context, val Entry) {
 	ctx.AddHandled(h.Key)
 
+	if h.Skip {
+		return
+	}
 	if len(val) == 0 {
 		return
 	}
