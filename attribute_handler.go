@@ -147,10 +147,10 @@ func (h *AttributeHandler) renderDecorator(ctx *Context, d *Decorator) {
 
 	switch {
 	case d.Colorizer != nil:
-		d.Colorizer.Fprint(ctx.W, h.Prefix)
+		d.Colorizer.Fprint(ctx.W, d.Literal)
 	case h.Colorizer != nil:
-		h.Colorizer.Fprint(ctx.W, h.Prefix)
+		h.Colorizer.Fprint(ctx.W, d.Literal)
 	default:
-		fmt.Fprint(ctx.W, h.Prefix)
+		fmt.Fprint(ctx.W, d.Literal)
 	}
 }

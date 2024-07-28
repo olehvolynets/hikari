@@ -15,6 +15,11 @@ type DisplayProps struct {
 }
 
 func (dp *DisplayProps) ToColor() *color.Color {
+	var zero DisplayProps
+	if *dp == zero {
+		return nil
+	}
+
 	c := color.New()
 
 	if fg, ok := FgColors[dp.Fg]; ok {

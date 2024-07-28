@@ -18,7 +18,6 @@ events:
     scheme:
       - name: asdf
         optional: true
-        prefix: " "
         postfix:
           literal: " "
           display:
@@ -26,50 +25,63 @@ events:
       - name: ts
         display:
           fg: white
-      - literal: " "
       - name: status
         display:
           fg: green
-      - literal: " "
+        prefix: " "
       - name: method
-      - literal: " "
+        prefix: " "
       - name: path
-      - literal: " "
+        prefix: " "
       - name: took
         display:
           bold: true
+        prefix: " "
       # - name: ts
       #   type: datetime
-      # - name: severity
-      #   as: severity
-      # - name: path
       # - special: rest
   - name: ServerShutdown
     matcher:
       event: ServerShutdown
     scheme:
       - name: ts
-      - literal: " "
+        display:
+          fg: white
       - name: msg
+        display:
+          fg: white
+        prefix: " "
   - name: ServerStop
     matcher:
       event: ServerStop
     scheme:
       - name: ts
-      - literal: " "
+        postfix: " "
+        display:
+          fg: white
       - name: event
+        display:
+          fg: blue
   - name: DBTrace
     matcher:
       event: DBTrace
     scheme:
       - name: ts
-      - literal: " "
+        postfix: " "
+        display:
+          fg: white
       - name: query
         display:
           fg: magenta
-      - literal: " ["
       - name: args
-      - literal: "] "
+        optional: true
+        prefix: " ["
+        postfix: "]"
       - name: took
-      - literal: " "
+        display:
+          fg: white
+          bold: true
+        prefix: " "
       - name: error
+        optional: true
+        prefix: " "

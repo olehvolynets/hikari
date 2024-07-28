@@ -3,7 +3,6 @@ package config
 import (
 	"errors"
 
-	"github.com/fatih/color"
 	"gopkg.in/yaml.v3"
 )
 
@@ -16,15 +15,6 @@ type SchemeItem struct {
 	Postfix  *Decorator   `yaml:"postfix"`
 
 	DisplayProps `yaml:"display"`
-}
-
-func (item *SchemeItem) ToColor() *color.Color {
-	var zero DisplayProps
-	if item.DisplayProps == zero {
-		return nil
-	}
-
-	return item.DisplayProps.ToColor()
 }
 
 type Decorator struct {
@@ -45,6 +35,8 @@ func (d *Decorator) UnmarshalYAML(node *yaml.Node) error {
 				valueNode := node.Content[i+1]
 				d.Literal = valueNode.Value
 			case "display":
+				valueNode := node.Content[i+1]
+				valueNode.Decode(&d.DisplayProps)
 			}
 
 			i++
