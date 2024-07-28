@@ -38,6 +38,7 @@ func NewEventHandler(evt config.Event) *EventHandler {
 		if schemeItem.Literal == "" {
 			attrHandler := &AttributeHandler{
 				Key:       schemeItem.Name,
+				Skip:      schemeItem.Skip,
 				Optional:  schemeItem.Optional,
 				Colorizer: schemeItem.ToColor(),
 			}

@@ -7,6 +7,7 @@ import (
 
 type AttributeHandler struct {
 	Key      string
+	Skip     bool
 	Optional bool
 	Prefix   *Decorator
 	Postfix  *Decorator

@@ -10,6 +10,7 @@ type SchemeItem struct {
 	Name     string       `yaml:"name"`
 	Type     PropertyType `yaml:"type"`
 	Literal  string       `yaml:"literal"`
+	Skip     bool         `yaml:"skip"`
 	Optional bool         `yaml:"optional"`
 	Prefix   *Decorator   `yaml:"prefix"`
 	Postfix  *Decorator   `yaml:"postfix"`
