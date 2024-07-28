@@ -6,7 +6,12 @@ import (
 )
 
 type AttributeHandler struct {
-	Key string
+	Key          string
+	Optional     bool
+	Prefix       string
+	PrefixColor  Colorizer
+	Postfix      string
+	PostfixColor Colorizer
 	Colorizer
 }
 
@@ -15,7 +20,37 @@ func (h *AttributeHandler) Render(ctx *Context, val Entry) {
 		return
 	}
 
-	v := val[h.Key]
+	v, ok := val[h.Key]
+	if !ok {
+		if h.Optional {
+			return
+		}
+
+		if h.Prefix != "" {
+			if h.PrefixColor != nil {
+				h.PrefixColor.Fprint(ctx.W, h.Prefix)
+			} else if h.Colorizer != nil {
+				h.Colorizer.Fprint(ctx.W, h.Prefix)
+			} else {
+				fmt.Fprint(ctx.W, h.Prefix)
+			}
+		}
+
+		h.renderNull(ctx)
+
+		if h.Postfix != "" {
+			if h.PostfixColor != nil {
+				h.PostfixColor.Fprint(ctx.W, h.Postfix)
+			} else if h.Colorizer != nil {
+				h.Colorizer.Fprint(ctx.W, h.Postfix)
+			} else {
+				fmt.Fprint(ctx.W, h.Postfix)
+			}
+		}
+
+		return
+	}
+
 	h.render(ctx, reflect.ValueOf(v))
 }
 
@@ -40,7 +75,7 @@ func (h *AttributeHandler) render(ctx *Context, val reflect.Value) {
 	case reflect.Float32, reflect.Float64:
 		h.renderNumber(ctx, val.Float())
 	case reflect.Bool:
-		h.Colorizer.Fprint(ctx.W, val.Bool())
+		h.renderBool(ctx, val.Bool())
 	case reflect.String:
 		h.renderString(ctx, val.String())
 	case reflect.Array, reflect.Slice:
@@ -62,7 +97,7 @@ func (h *AttributeHandler) renderNull(ctx *Context) {
 
 func (h *AttributeHandler) renderNumber(ctx *Context, v any) {
 	if h.Colorizer == nil {
-		fmt.Fprintf(ctx.W, "%s", v)
+		numberFormat.Fprintf(ctx.W, "%v", v)
 	} else {
 		h.Colorizer.Fprint(ctx.W, v)
 	}
@@ -70,7 +105,15 @@ func (h *AttributeHandler) renderNumber(ctx *Context, v any) {
 
 func (h *AttributeHandler) renderString(ctx *Context, v any) {
 	if h.Colorizer == nil {
-		fmt.Fprintf(ctx.W, "%s", v)
+		stringFormat.Fprintf(ctx.W, "%s", v)
+	} else {
+		h.Colorizer.Fprintf(ctx.W, "%s", v)
+	}
+}
+
+func (h *AttributeHandler) renderBool(ctx *Context, v any) {
+	if h.Colorizer == nil {
+		boolFormat.Fprintf(ctx.W, "%s", v)
 	} else {
 		h.Colorizer.Fprintf(ctx.W, "%s", v)
 	}

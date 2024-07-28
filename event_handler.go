@@ -35,10 +35,23 @@ func NewEventHandler(evt config.Event) *EventHandler {
 
 	for idx, schemeItem := range evt.Scheme {
 		if schemeItem.Literal == "" {
-			handler.Handlers[idx] = &AttributeHandler{
+			attrHandler := &AttributeHandler{
 				Key:       schemeItem.Name,
+				Optional:  schemeItem.Optional,
 				Colorizer: schemeItem.ToColor(),
 			}
+
+			if schemeItem.Prefix != nil {
+				attrHandler.Prefix = schemeItem.Prefix.Literal
+				attrHandler.PrefixColor = schemeItem.Prefix.ToColor()
+			}
+
+			if schemeItem.Postfix != nil {
+				attrHandler.Postfix = schemeItem.Postfix.Literal
+				attrHandler.PostfixColor = schemeItem.Postfix.ToColor()
+			}
+
+			handler.Handlers[idx] = attrHandler
 		} else {
 			handler.Handlers[idx] = &LiteralHandler{
 				Literal:   schemeItem.Literal,

@@ -17,7 +17,12 @@ events:
       event: RequestLog
     scheme:
       - name: asdf
-      - literal: " "
+        optional: true
+        prefix: " "
+        postfix:
+          literal: " "
+          display:
+            bg: red
       - name: ts
         display:
           fg: white

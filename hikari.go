@@ -36,12 +36,13 @@ func (app *Hikari) Start(r io.Reader) error {
 
 	for {
 		entry := make(Entry)
-		var handler *EventHandler
 
-		if err := decoder.Decode(&entry); errors.Is(err, io.EOF) {
-			// All readers are exhausted at this point.
-			break
-		} else if err != nil {
+		if err := decoder.Decode(&entry); err != nil {
+			if errors.Is(err, io.EOF) {
+				// All readers are exhausted at this point.
+				break
+			}
+
 			// json.Decoder internally buffers 4kB read from the reader
 			// so to process input need to aggregate remaining buffered data
 			// with the primary reader.
@@ -59,10 +60,10 @@ func (app *Hikari) Start(r io.Reader) error {
 			//   will be parsed successfully, but in that case it will
 			//   be handled in the same maner.
 			decoder = json.NewDecoder(buffReader)
-		} else {
-			// No decoding errors branch.
-			handler = app.MatchEvent(entry)
+			continue
 		}
+
+		handler := app.MatchEvent(entry)
 
 		if handler != nil {
 			ctx := Context{W: app.sink, IndentChar: "\t"}
