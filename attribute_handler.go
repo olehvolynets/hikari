@@ -15,12 +15,26 @@ type AttributeHandler struct {
 	Type     config.PropertyType
 	Prefix   *Decorator
 	Postfix  *Decorator
+
+	RefHandler *ReferenceHandler
+
 	Colorizer
 }
 
 type Decorator struct {
 	Literal string
 	Colorizer
+}
+
+func NewDecorator(d *config.Decorator) *Decorator {
+	if d == nil {
+		return nil
+	}
+
+	return &Decorator{
+		Literal:   d.Literal,
+		Colorizer: d.ToColor(),
+	}
 }
 
 func (h *AttributeHandler) Render(ctx *Context, val Entry) {
@@ -46,9 +60,16 @@ func (h *AttributeHandler) Render(ctx *Context, val Entry) {
 		return
 	}
 
-	h.renderDecorator(ctx, h.Prefix)
-	h.render(ctx, reflect.ValueOf(h.typeConvert(v)))
-	h.renderDecorator(ctx, h.Postfix)
+	if h.RefHandler == nil {
+		h.renderDecorator(ctx, h.Prefix)
+		h.render(ctx, reflect.ValueOf(h.typeConvert(v)))
+		h.renderDecorator(ctx, h.Postfix)
+	} else {
+		h.renderDecorator(ctx, h.Prefix)
+
+		h.RefHandler.Render(ctx, v)
+		h.renderDecorator(ctx, h.Postfix)
+	}
 }
 
 func (h *AttributeHandler) render(ctx *Context, val reflect.Value) {

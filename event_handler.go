@@ -25,11 +25,12 @@ type Handler interface {
 	Render(*Context, Entry)
 }
 type EventHandler struct {
-	Event    config.Event
-	Handlers []Handler
+	Event       config.Event
+	Handlers    []Handler
+	RefHandlers []Handler
 }
 
-func NewEventHandler(evt config.Event) *EventHandler {
+func NewEventHandler(evt config.Event, refHandlers []*ReferenceHandler) *EventHandler {
 	handler := EventHandler{
 		Event:    evt,
 		Handlers: make([]Handler, len(evt.Scheme)),
@@ -43,19 +44,19 @@ func NewEventHandler(evt config.Event) *EventHandler {
 				Optional:  schemeItem.Optional,
 				Type:      schemeItem.Type,
 				Colorizer: schemeItem.ToColor(),
+				Prefix:    NewDecorator(schemeItem.Prefix),
+				Postfix:   NewDecorator(schemeItem.Postfix),
 			}
 
-			if schemeItem.Prefix != nil {
-				attrHandler.Prefix = &Decorator{
-					Literal:   schemeItem.Prefix.Literal,
-					Colorizer: schemeItem.Prefix.ToColor(),
+			if schemeItem.As != "" {
+				for _, h := range refHandlers {
+					if h.Name == schemeItem.As {
+						attrHandler.RefHandler = h
+					}
 				}
-			}
 
-			if schemeItem.Postfix != nil {
-				attrHandler.Postfix = &Decorator{
-					Literal:   schemeItem.Postfix.Literal,
-					Colorizer: schemeItem.Postfix.ToColor(),
+				if attrHandler.RefHandler == nil {
+					panic(fmt.Sprintf("hikari: unknown reference \"as: %s\"", schemeItem.As))
 				}
 			}
 

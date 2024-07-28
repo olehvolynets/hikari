@@ -8,6 +8,7 @@ import (
 
 type SchemeItem struct {
 	Name     string       `yaml:"name"`
+	As       string       `yaml:"as"`
 	Type     PropertyType `yaml:"type"`
 	Literal  string       `yaml:"literal"`
 	Skip     bool         `yaml:"skip"`

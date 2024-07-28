@@ -2,12 +2,12 @@
 # To use a shared type it must be referencd `as: <name>`
 #  so with the example type it would be `as: severity`
 types:
+  - name: timestamp
+    type: time
+    fg: white
   - name: severity
-    type: enum
-    variants:
-      - name: DBG
-        fg: orange
-        bold: true
+    prefix: "["
+    postfix: "] "
 
 # type of events and scheme of their rendering
 events:
@@ -16,11 +16,9 @@ events:
       event: RequestLog
     scheme:
       - name: severity
-        prefix: "["
-        postfix: "] "
+        as: severity
       - name: ts
-        type: time
-        fg: white
+        as: timestamp
       - name: status
         fg: green
         prefix: " "
@@ -49,9 +47,9 @@ events:
       event: ServerStart
     scheme:
       - name: severity
-        prefix: "["
-        postfix: "] "
+        as: severity
       - name: ts
+        as: timestamp
         postfix: " "
       - name: ip
         fg: green
@@ -74,9 +72,9 @@ events:
       event: ServerShutdown
     scheme:
       - name: severity
-        prefix: "["
-        postfix: "] "
+        as: severity
       - name: ts
+        as: timestamp
       - name: msg
         prefix: " "
       - name: event
@@ -93,9 +91,9 @@ events:
       event: ServerStop
     scheme:
       - name: severity
-        prefix: "["
-        postfix: "] "
+        as: severity
       - name: ts
+        as: timestamp
         postfix: " "
       - name: event
         fg: blue
@@ -112,11 +110,10 @@ events:
       event: DBTrace
     scheme:
       - name: severity
-        prefix: "["
-        postfix: "] "
+        as: severity
       - name: ts
+        as: timestamp
         postfix: " "
-        fg: white
       - name: query
         fg: magenta
       - name: args

@@ -12,17 +12,23 @@ import (
 
 type Hikari struct {
 	sink          io.Writer
+	refHandlers   []*ReferenceHandler
 	eventHandlers []*EventHandler
 }
 
 func NewHikari(out io.Writer, cfg *config.Config) (*Hikari, error) {
 	s := Hikari{
 		sink:          out,
+		refHandlers:   make([]*ReferenceHandler, len(cfg.Types)),
 		eventHandlers: make([]*EventHandler, len(cfg.Events)),
 	}
 
+	for idx, t := range cfg.Types {
+		s.refHandlers[idx] = NewReferenceHandler(t)
+	}
+
 	for idx, evt := range cfg.Events {
-		s.eventHandlers[idx] = NewEventHandler(evt)
+		s.eventHandlers[idx] = NewEventHandler(evt, s.refHandlers)
 	}
 
 	return &s, nil
