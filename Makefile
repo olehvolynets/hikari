@@ -14,7 +14,7 @@ run:
 
 .PHONY: debug
 debug:
-	@HIKARI_LOG_LEVEL=debug go run $(entrypoint)
+	@HIKARI_LOG_LEVEL=debug go run $(entrypoint) < ./tmp/pyra_sample.txt
 
 .PHONY: test
 test:

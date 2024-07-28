@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"log"
 	"os"
 
@@ -30,13 +31,7 @@ func main() {
 		hikari.Fatal(err)
 	}
 
-	// TODO: change to stdio
-	f, err := os.Open("tmp/pyra_sample.txt")
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	if err = app.Start(f); err != nil {
+	if err = app.Start(os.Stdin); err != nil {
 		log.Fatal(err)
 	}
 }
