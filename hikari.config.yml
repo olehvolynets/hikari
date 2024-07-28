@@ -20,6 +20,7 @@ events:
         prefix: "["
         postfix: "] "
       - name: ts
+        type: time
         display:
           fg: white
       - name: status

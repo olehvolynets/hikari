@@ -12,6 +12,8 @@ const (
 	ArrayType    PropertyType = "array"
 	BoolType     PropertyType = "bool"
 	DateTimeType PropertyType = "datetime"
+	DateType     PropertyType = "date"
+	TimeType     PropertyType = "time"
 	DurationType PropertyType = "duration"
 	EnumType     PropertyType = "enum"
 	MapType      PropertyType = "map"
@@ -35,6 +37,10 @@ func (s *PropertyType) UnmarshalYAML(node *yaml.Node) error {
 		*s = EnumType
 	case "datetime":
 		*s = DateTimeType
+	case "date":
+		*s = DateType
+	case "time":
+		*s = TimeType
 	case "duration":
 		*s = DurationType
 	default:

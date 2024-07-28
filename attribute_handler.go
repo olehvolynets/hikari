@@ -80,11 +80,7 @@ func (h *AttributeHandler) render(ctx *Context, val reflect.Value) {
 	case reflect.Map:
 		h.renderMap(ctx, val)
 	default:
-		if val.IsNil() {
-			h.renderNull(ctx)
-		} else {
-			h.Colorizer.Fprint(ctx.W, val.Kind())
-		}
+		h.Colorizer.Fprint(ctx.W, val)
 	}
 }
 
@@ -173,6 +169,25 @@ func (h *AttributeHandler) typeConvert(v any) any {
 			return time.Duration(vFloat).String()
 		} else {
 			return v
+		}
+	case config.DateType, config.TimeType, config.DateTimeType:
+		dateString, ok := v.(string)
+		if !ok {
+			return v
+		}
+
+		date, err := time.Parse(time.RFC3339, dateString)
+		if err != nil {
+			return v
+		}
+
+		switch h.Type {
+		case config.DateType:
+			return date.Format(time.DateOnly)
+		case config.TimeType:
+			return date.Format(time.TimeOnly)
+		default:
+			return date.Format(time.DateTime)
 		}
 	default:
 		return v
