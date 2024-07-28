@@ -4,8 +4,9 @@
 types:
   - name: timestamp
     type: time
-    fg: white
+    fg: hi-black
   - name: severity
+    variants: {}
     prefix: "["
     postfix: "] "
 
@@ -23,6 +24,7 @@ events:
         fg: green
         prefix: " "
       - name: method
+        fg: blue
         prefix: " "
       - name: path
         prefix: " "

@@ -154,7 +154,7 @@ func (h *AttributeHandler) renderMap(ctx *Context, val reflect.Value) {
 	fmt.Fprintln(ctx.W, "{")
 	ctx.Indent()
 	for _, key := range val.MapKeys() {
-		fmt.Fprintf(
+		mapKeyFormat.Fprintf(
 			ctx.W,
 			"%s%s: ",
 			ctx.CurrentIndent(),
