@@ -10,6 +10,8 @@ type Context struct {
 	IndentChar  string
 
 	W io.Writer
+
+	HandledAttributes []string
 }
 
 func (ctx *Context) Indent() {
@@ -22,4 +24,8 @@ func (ctx *Context) Dedent() {
 
 func (ctx *Context) CurrentIndent() string {
 	return strings.Repeat(ctx.IndentChar, ctx.IndentLevel)
+}
+
+func (ctx *Context) AddHandled(key string) {
+	ctx.HandledAttributes = append(ctx.HandledAttributes, key)
 }

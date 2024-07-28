@@ -3,6 +3,7 @@ package hikari
 import (
 	"fmt"
 	"reflect"
+	"slices"
 
 	"github.com/fatih/color"
 
@@ -77,6 +78,15 @@ func (h *EventHandler) Render(ctx *Context, val Entry) {
 	for _, attrHandler := range h.Handlers {
 		attrHandler.Render(ctx, val)
 	}
+
+	unhandled := make(Entry, len(val)/2)
+	for k, v := range val {
+		if !slices.Contains(ctx.HandledAttributes, k) {
+			unhandled[k] = v
+		}
+	}
+
+	DefaultEventHandler.Render(ctx, unhandled)
 
 	fmt.Fprintln(ctx.W)
 }
