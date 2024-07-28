@@ -6,12 +6,15 @@ import (
 )
 
 type AttributeHandler struct {
-	Key          string
-	Optional     bool
-	Prefix       string
-	PrefixColor  Colorizer
-	Postfix      string
-	PostfixColor Colorizer
+	Key      string
+	Optional bool
+	Prefix   *Decorator
+	Postfix  *Decorator
+	Colorizer
+}
+
+type Decorator struct {
+	Literal string
 	Colorizer
 }
 
@@ -26,32 +29,16 @@ func (h *AttributeHandler) Render(ctx *Context, val Entry) {
 			return
 		}
 
-		if h.Prefix != "" {
-			if h.PrefixColor != nil {
-				h.PrefixColor.Fprint(ctx.W, h.Prefix)
-			} else if h.Colorizer != nil {
-				h.Colorizer.Fprint(ctx.W, h.Prefix)
-			} else {
-				fmt.Fprint(ctx.W, h.Prefix)
-			}
-		}
-
+		h.renderDecorator(ctx, h.Prefix)
 		h.renderNull(ctx)
-
-		if h.Postfix != "" {
-			if h.PostfixColor != nil {
-				h.PostfixColor.Fprint(ctx.W, h.Postfix)
-			} else if h.Colorizer != nil {
-				h.Colorizer.Fprint(ctx.W, h.Postfix)
-			} else {
-				fmt.Fprint(ctx.W, h.Postfix)
-			}
-		}
+		h.renderDecorator(ctx, h.Postfix)
 
 		return
 	}
 
+	h.renderDecorator(ctx, h.Prefix)
 	h.render(ctx, reflect.ValueOf(v))
+	h.renderDecorator(ctx, h.Postfix)
 }
 
 func (h *AttributeHandler) render(ctx *Context, val reflect.Value) {
@@ -151,4 +138,19 @@ func (h *AttributeHandler) renderMap(ctx *Context, val reflect.Value) {
 	}
 	ctx.Dedent()
 	fmt.Fprint(ctx.W, ctx.CurrentIndent(), "}")
+}
+
+func (h *AttributeHandler) renderDecorator(ctx *Context, d *Decorator) {
+	if d == nil {
+		return
+	}
+
+	switch {
+	case d.Colorizer != nil:
+		d.Colorizer.Fprint(ctx.W, h.Prefix)
+	case h.Colorizer != nil:
+		h.Colorizer.Fprint(ctx.W, h.Prefix)
+	default:
+		fmt.Fprint(ctx.W, h.Prefix)
+	}
 }

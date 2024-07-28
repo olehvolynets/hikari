@@ -42,13 +42,17 @@ func NewEventHandler(evt config.Event) *EventHandler {
 			}
 
 			if schemeItem.Prefix != nil {
-				attrHandler.Prefix = schemeItem.Prefix.Literal
-				attrHandler.PrefixColor = schemeItem.Prefix.ToColor()
+				attrHandler.Prefix = &Decorator{
+					Literal:   schemeItem.Prefix.Literal,
+					Colorizer: schemeItem.Prefix.ToColor(),
+				}
 			}
 
 			if schemeItem.Postfix != nil {
-				attrHandler.Postfix = schemeItem.Postfix.Literal
-				attrHandler.PostfixColor = schemeItem.Postfix.ToColor()
+				attrHandler.Postfix = &Decorator{
+					Literal:   schemeItem.Postfix.Literal,
+					Colorizer: schemeItem.Postfix.ToColor(),
+				}
 			}
 
 			handler.Handlers[idx] = attrHandler
