@@ -16,12 +16,9 @@ events:
     matcher:
       event: RequestLog
     scheme:
-      - name: asdf
-        optional: true
-        postfix:
-          literal: " "
-          display:
-            bg: red
+      - name: severity
+        prefix: "["
+        postfix: "] "
       - name: ts
         display:
           fg: white
@@ -37,35 +34,100 @@ events:
         display:
           bold: true
         prefix: " "
+      - name: location
+        optional: true
+        prefix: " to: "
+      - name: event
+        skip: true
+      - name: msg
+        skip: true
+      - name: traceId
+        skip: true
       # - name: ts
       #   type: datetime
       # - special: rest
+  - name: ServerStart
+    matcher:
+      event: ServerStart
+    scheme:
+      - name: severity
+        prefix: "["
+        postfix: "] "
+      - name: ts
+        postfix: " "
+      - name: ip
+        display:
+          fg: green
+      - literal: ":"
+        display:
+          fg: green
+      - name: port
+        display:
+          fg: green
+      - name: msg
+        skip: true
+      - name: event
+        prefix:
+          literal: " ("
+          display:
+            fg: white
+        postfix:
+          literal: ")"
+          display:
+            fg: white
+        display:
+          fg: blue
   - name: ServerShutdown
     matcher:
       event: ServerShutdown
     scheme:
+      - name: severity
+        prefix: "["
+        postfix: "] "
       - name: ts
-        display:
-          fg: white
       - name: msg
-        display:
-          fg: white
         prefix: " "
+      - name: event
+        prefix:
+          literal: " ("
+          display:
+            fg: white
+        postfix:
+          literal: ")"
+          display:
+            fg: white
+        display:
+          fg: blue
+
   - name: ServerStop
     matcher:
       event: ServerStop
     scheme:
+      - name: severity
+        prefix: "["
+        postfix: "] "
       - name: ts
         postfix: " "
-        display:
-          fg: white
       - name: event
+        prefix:
+          literal: " ("
+          display:
+            fg: white
+        postfix:
+          literal: ")"
+          display:
+            fg: white
         display:
           fg: blue
+      - name: msg
+        skip: true
   - name: DBTrace
     matcher:
       event: DBTrace
     scheme:
+      - name: severity
+        prefix: "["
+        postfix: "] "
       - name: ts
         postfix: " "
         display:
@@ -85,3 +147,5 @@ events:
       - name: error
         optional: true
         prefix: " "
+      - name: event
+        skip: true

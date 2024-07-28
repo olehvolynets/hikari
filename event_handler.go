@@ -12,7 +12,7 @@ import (
 
 var (
 	numberFormat Colorizer = color.New(color.FgHiRed)
-	stringFormat Colorizer = color.New(color.FgYellow)
+	stringFormat Colorizer = color.New(color.FgWhite)
 	boolFormat   Colorizer = color.New(color.FgBlue)
 	nullFormat   Colorizer = color.New(color.FgYellow, color.Bold)
 )
