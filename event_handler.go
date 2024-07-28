@@ -34,14 +34,14 @@ func NewEventHandler(evt config.Event) *EventHandler {
 	}
 
 	for idx, schemeItem := range evt.Scheme {
-		if schemeItem.Literal.Literal == "" {
+		if schemeItem.Literal == "" {
 			handler.Handlers[idx] = &AttributeHandler{
-				Key:       schemeItem.Property.Name,
+				Key:       schemeItem.Name,
 				Colorizer: schemeItem.ToColor(),
 			}
 		} else {
 			handler.Handlers[idx] = &LiteralHandler{
-				Literal:   schemeItem.Literal.Literal,
+				Literal:   schemeItem.Literal,
 				Colorizer: schemeItem.ToColor(),
 			}
 		}
