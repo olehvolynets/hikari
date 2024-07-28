@@ -6,9 +6,8 @@ types:
     type: enum
     variants:
       - name: DBG
-        display:
-          fg: orange
-          bold: true
+        fg: orange
+        bold: true
 
 # type of events and scheme of their rendering
 events:
@@ -21,11 +20,9 @@ events:
         postfix: "] "
       - name: ts
         type: time
-        display:
-          fg: white
+        fg: white
       - name: status
-        display:
-          fg: green
+        fg: green
         prefix: " "
       - name: method
         prefix: " "
@@ -33,8 +30,7 @@ events:
         prefix: " "
       - name: took
         type: duration
-        display:
-          bold: true
+        bold: true
         prefix: " "
       - name: location
         optional: true
@@ -58,27 +54,21 @@ events:
       - name: ts
         postfix: " "
       - name: ip
-        display:
-          fg: green
+        fg: green
       - literal: ":"
-        display:
-          fg: green
+        fg: green
       - name: port
-        display:
-          fg: green
+        fg: green
       - name: msg
         skip: true
       - name: event
+        fg: blue
         prefix:
           literal: " ("
-          display:
-            fg: white
+          fg: white
         postfix:
           literal: ")"
-          display:
-            fg: white
-        display:
-          fg: blue
+          fg: white
   - name: ServerShutdown
     matcher:
       event: ServerShutdown
@@ -90,16 +80,13 @@ events:
       - name: msg
         prefix: " "
       - name: event
+        fg: blue
         prefix:
           literal: " ("
-          display:
-            fg: white
+          fg: white
         postfix:
           literal: ")"
-          display:
-            fg: white
-        display:
-          fg: blue
+          fg: white
 
   - name: ServerStop
     matcher:
@@ -111,16 +98,13 @@ events:
       - name: ts
         postfix: " "
       - name: event
+        fg: blue
         prefix:
           literal: " ("
-          display:
-            fg: white
+          fg: white
         postfix:
           literal: ")"
-          display:
-            fg: white
-        display:
-          fg: blue
+          fg: white
       - name: msg
         skip: true
   - name: DBTrace
@@ -132,19 +116,16 @@ events:
         postfix: "] "
       - name: ts
         postfix: " "
-        display:
-          fg: white
+        fg: white
       - name: query
-        display:
-          fg: magenta
+        fg: magenta
       - name: args
         optional: true
         prefix: " ["
         postfix: "]"
       - name: took
-        display:
-          fg: white
-          bold: true
+        fg: white
+        bold: true
         prefix: " "
       - name: error
         optional: true

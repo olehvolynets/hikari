@@ -15,12 +15,12 @@ type SchemeItem struct {
 	Prefix   *Decorator   `yaml:"prefix"`
 	Postfix  *Decorator   `yaml:"postfix"`
 
-	DisplayProps `yaml:"display"`
+	DisplayProps `yaml:",inline"`
 }
 
 type Decorator struct {
 	Literal      string `yaml:"literal"`
-	DisplayProps `yaml:"display"`
+	DisplayProps `yaml:",inline"`
 }
 
 func (d *Decorator) UnmarshalYAML(node *yaml.Node) error {
