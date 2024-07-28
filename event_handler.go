@@ -2,6 +2,7 @@ package hikari
 
 import (
 	"fmt"
+	"reflect"
 
 	"github.com/fatih/color"
 
@@ -79,4 +80,16 @@ func (h *EventHandler) Render(ctx *Context, val Entry) {
 	fmt.Fprintln(ctx.W)
 }
 
-var DefaultEventHandler = &EventHandler{}
+type defaultEventHandler struct{}
+
+func (h *defaultEventHandler) Render(ctx *Context, val Entry) {
+	if len(val) == 0 {
+		return
+	}
+
+	attrHandler := AttributeHandler{}
+	attrHandler.render(ctx, reflect.ValueOf(val))
+	fmt.Fprintln(ctx.W)
+}
+
+var DefaultEventHandler = &defaultEventHandler{}

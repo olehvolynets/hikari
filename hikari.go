@@ -64,23 +64,20 @@ func (app *Hikari) Start(r io.Reader) error {
 		}
 
 		handler := app.MatchEvent(entry)
+		ctx := Context{W: app.sink, IndentChar: "\t"}
 
-		if handler != nil {
-			ctx := Context{W: app.sink, IndentChar: "\t"}
-
-			handler.Render(&ctx, entry)
-		}
+		handler.Render(&ctx, entry)
 	}
 
 	return nil
 }
 
-func (app *Hikari) MatchEvent(entry Entry) *EventHandler {
+func (app *Hikari) MatchEvent(entry Entry) Handler {
 	for _, handler := range app.eventHandlers {
 		if handler.Event.Match(entry) {
 			return handler
 		}
 	}
 
-	return nil
+	return DefaultEventHandler
 }
