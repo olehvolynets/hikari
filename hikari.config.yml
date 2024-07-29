@@ -8,7 +8,7 @@ types:
   - name: severity
     variants: {}
     prefix: "["
-    postfix: "] "
+    postfix: "]"
 
 # type of events and scheme of their rendering
 events:
@@ -20,6 +20,7 @@ events:
         as: severity
       - name: ts
         as: timestamp
+        prefix: " "
       - name: status
         fg: green
         prefix: " "
@@ -50,6 +51,7 @@ events:
     scheme:
       - name: severity
         as: severity
+        postfix: " "
       - name: ts
         as: timestamp
         postfix: " "
@@ -75,6 +77,7 @@ events:
     scheme:
       - name: severity
         as: severity
+        postfix: " "
       - name: ts
         as: timestamp
       - name: msg
@@ -94,6 +97,7 @@ events:
     scheme:
       - name: severity
         as: severity
+        postfix: " "
       - name: ts
         as: timestamp
         postfix: " "
@@ -113,6 +117,7 @@ events:
     scheme:
       - name: severity
         as: severity
+        postfix: " "
       - name: ts
         as: timestamp
         postfix: " "
@@ -131,3 +136,16 @@ events:
         prefix: " "
       - name: event
         skip: true
+
+  - name: Rest
+    matcher:
+      msg:
+        filled: true
+    scheme:
+      - name: severity
+        as: severity
+        postfix: " "
+      - name: ts
+        as: timestamp
+        postfix: " "
+      - name: msg
