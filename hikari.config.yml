@@ -6,7 +6,7 @@ types:
     type: time
     fg: hi-black
   - name: severity
-    variants: {}
+    variants: []
     prefix: "["
     postfix: "]"
 
@@ -21,14 +21,14 @@ events:
       - literal: " "
       - name: status
         variants:
-          200:
-            fg: green
+          - { min: 200, max: 299, fg: green }
+          - { min: 400, max: 499, fg: yellow, bold: true }
       - literal: " "
       - name: method
         variants:
-          GET: { fg: white, bold: true }
-          POST: { fg: blue }
-          PUT: { fg: yellow }
+          - { value: GET, fg: white, bold: true }
+          - { value: POST, fg: blue }
+          - { value: PUT, fg: yellow }
       - literal: " "
       - name: path
       - name: took

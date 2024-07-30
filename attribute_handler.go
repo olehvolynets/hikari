@@ -59,16 +59,7 @@ func (h *AttributeHandler) Render(ctx *Context, val Entry) {
 	case h.RefHandler != nil:
 		h.RefHandler.Render(ctx, v)
 	case h.EnumHandler != nil:
-		var vStr string
-
-		switch vv := v.(type) {
-		case string:
-			vStr = vv
-		default:
-			vStr = fmt.Sprint(vv)
-		}
-
-		h.EnumHandler.Render(ctx, vStr)
+		h.EnumHandler.Render(ctx, reflect.ValueOf(v))
 	default:
 		h.render(ctx, reflect.ValueOf(h.typeConvert(v)))
 	}

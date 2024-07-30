@@ -9,7 +9,7 @@ type SchemeItem struct {
 	Skip     bool         `yaml:"skip"`
 	Optional bool         `yaml:"optional"`
 
-	Variants map[string]EnumVariant `yaml:"variants"`
+	Variants []EnumVariant `yaml:"variants"`
 
 	Prefix  *Decorator `yaml:"prefix"`
 	Postfix *Decorator `yaml:"postfix"`
@@ -18,7 +18,11 @@ type SchemeItem struct {
 }
 
 type EnumVariant struct {
-	Literal string `yaml:"literal"`
+	Value   string `yaml:"value"`
+	Replace string `yaml:"literal"`
+
+	Min float64 `yaml:"min"`
+	Max float64 `yaml:"max"`
 
 	Prefix  *Decorator `yaml:"prefix"`
 	Postfix *Decorator `yaml:"postfix"`
