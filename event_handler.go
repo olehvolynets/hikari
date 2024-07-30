@@ -15,6 +15,7 @@ var (
 	stringFormat Colorizer = color.New(color.FgWhite)
 	boolFormat   Colorizer = color.New(color.FgBlue)
 	nullFormat   Colorizer = color.New(color.FgYellow, color.Bold)
+	mapKeyFormat Colorizer = color.New(color.FgRed)
 )
 
 type Entry map[string]any
