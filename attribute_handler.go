@@ -16,7 +16,8 @@ type AttributeHandler struct {
 	Prefix   *Decorator
 	Postfix  *Decorator
 
-	RefHandler *ReferenceHandler
+	RefHandler  *ReferenceHandler
+	EnumHandler *EnumHandler
 
 	Colorizer
 }
@@ -40,35 +41,36 @@ func NewDecorator(d *config.Decorator) *Decorator {
 func (h *AttributeHandler) Render(ctx *Context, val Entry) {
 	ctx.AddHandled(h.Key)
 
-	if h.Skip {
-		return
-	}
-	if len(val) == 0 {
+	if h.Skip || len(val) == 0 {
 		return
 	}
 
-	v, ok := val[h.Key]
-	if !ok {
-		if h.Optional {
-			return
+	v, keyPresent := val[h.Key]
+	if !keyPresent && h.Optional {
+		return
+	}
+
+	h.renderDecorator(ctx, h.Prefix)
+	defer h.renderDecorator(ctx, h.Postfix)
+
+	switch {
+	case !keyPresent:
+		h.renderNull(ctx)
+	case h.RefHandler != nil:
+		h.RefHandler.Render(ctx, v)
+	case h.EnumHandler != nil:
+		var vStr string
+
+		switch vv := v.(type) {
+		case string:
+			vStr = vv
+		default:
+			vStr = fmt.Sprint(vv)
 		}
 
-		h.renderDecorator(ctx, h.Prefix)
-		h.renderNull(ctx)
-		h.renderDecorator(ctx, h.Postfix)
-
-		return
-	}
-
-	if h.RefHandler == nil {
-		h.renderDecorator(ctx, h.Prefix)
+		h.EnumHandler.Render(ctx, vStr)
+	default:
 		h.render(ctx, reflect.ValueOf(h.typeConvert(v)))
-		h.renderDecorator(ctx, h.Postfix)
-	} else {
-		h.renderDecorator(ctx, h.Prefix)
-
-		h.RefHandler.Render(ctx, v)
-		h.renderDecorator(ctx, h.Postfix)
 	}
 }
 

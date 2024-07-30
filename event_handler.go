@@ -59,6 +59,8 @@ func NewEventHandler(evt config.Event, refHandlers []*ReferenceHandler) *EventHa
 				if attrHandler.RefHandler == nil {
 					panic(fmt.Sprintf("hikari: unknown reference \"as: %s\"", schemeItem.As))
 				}
+			} else if schemeItem.Variants != nil {
+				attrHandler.EnumHandler = NewEnumHandler(schemeItem.Variants)
 			}
 
 			handler.Handlers[idx] = attrHandler

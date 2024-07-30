@@ -16,19 +16,21 @@ events:
     matcher:
       event: RequestLog
     scheme:
-      - name: severity
-        as: severity
-      - name: ts
-        as: timestamp
-        prefix: " "
+      - { name: severity, as: severity }
+      - { name: ts, as: timestamp }
+      - literal: " "
       - name: status
-        fg: green
-        prefix: " "
+        variants:
+          200:
+            fg: green
+      - literal: " "
       - name: method
-        fg: blue
-        prefix: " "
+        variants:
+          GET: { fg: white, bold: true }
+          POST: { fg: blue }
+          PUT: { fg: yellow }
+      - literal: " "
       - name: path
-        prefix: " "
       - name: took
         type: duration
         bold: true

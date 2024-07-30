@@ -7,7 +7,7 @@ type LiteralHandler struct {
 	Colorizer
 }
 
-func (h *LiteralHandler) Render(ctx *Context, val Entry) {
+func (h *LiteralHandler) Render(ctx *Context, _ Entry) {
 	if h.Colorizer == nil {
 		fmt.Fprint(ctx.W, h.Literal)
 	} else {
