@@ -134,6 +134,11 @@ func (h *AttributeHandler) renderBool(ctx *Context, v any) {
 }
 
 func (h *AttributeHandler) renderArray(ctx *Context, val reflect.Value) {
+	if val.Len() == 0 {
+		fmt.Fprintln(ctx.W, "[]")
+		return
+	}
+
 	fmt.Fprint(ctx.W, "[")
 	ctx.Indent()
 	if val.Len() > 0 {
@@ -151,6 +156,11 @@ func (h *AttributeHandler) renderArray(ctx *Context, val reflect.Value) {
 }
 
 func (h *AttributeHandler) renderMap(ctx *Context, val reflect.Value) {
+	if val.Len() == 0 {
+		fmt.Fprintln(ctx.W, "{}")
+		return
+	}
+
 	fmt.Fprintln(ctx.W, "{")
 	ctx.Indent()
 	for _, key := range val.MapKeys() {
