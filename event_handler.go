@@ -40,13 +40,14 @@ func NewEventHandler(evt config.Event, refHandlers []*ReferenceHandler) *EventHa
 	for idx, schemeItem := range evt.Scheme {
 		if schemeItem.Literal == "" {
 			attrHandler := &AttributeHandler{
-				Key:       schemeItem.Name,
-				Skip:      schemeItem.Skip,
-				Optional:  schemeItem.Optional,
-				Type:      schemeItem.Type,
-				Colorizer: schemeItem.ToColor(),
-				Prefix:    NewDecorator(schemeItem.Prefix),
-				Postfix:   NewDecorator(schemeItem.Postfix),
+				Key:         schemeItem.Name,
+				Skip:        schemeItem.Skip,
+				Optional:    schemeItem.Optional,
+				Type:        schemeItem.Type,
+				Colorizer:   schemeItem.ToColor(),
+				EnumHandler: NewEnumHandler(schemeItem.Variants),
+				Prefix:      NewDecorator(schemeItem.Prefix),
+				Postfix:     NewDecorator(schemeItem.Postfix),
 			}
 
 			if schemeItem.As != "" {
@@ -59,8 +60,6 @@ func NewEventHandler(evt config.Event, refHandlers []*ReferenceHandler) *EventHa
 				if attrHandler.RefHandler == nil {
 					panic(fmt.Sprintf("hikari: unknown reference \"as: %s\"", schemeItem.As))
 				}
-			} else if schemeItem.Variants != nil {
-				attrHandler.EnumHandler = NewEnumHandler(schemeItem.Variants)
 			}
 
 			handler.Handlers[idx] = attrHandler

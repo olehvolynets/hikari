@@ -12,6 +12,10 @@ type EnumHandler struct {
 }
 
 func NewEnumHandler(cfg []config.EnumVariant) *EnumHandler {
+	if len(cfg) == 0 {
+		return nil
+	}
+
 	handler := &EnumHandler{
 		Variants: make([]EnumVariantHandler, len(cfg)),
 	}

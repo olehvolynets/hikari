@@ -6,7 +6,12 @@ types:
     type: time
     fg: hi-black
   - name: severity
-    variants: []
+    variants:
+    - { value: TRACE, replace: TRC, fg: white }
+    - { value: DEBUG, replace: DBG, fg: magenta }
+    - { value: INFO, replace: INF, fg: blue }
+    - { value: WARN, replace: WRN, fg: yellow, bold: true }
+    - { value: ERROR, replace: ERR, fg: red, bold: true, underline: true }
     prefix: "["
     postfix: "]"
 
@@ -17,18 +22,19 @@ events:
       event: RequestLog
     scheme:
       - { name: severity, as: severity }
+      - literal: " "
       - { name: ts, as: timestamp }
       - literal: " "
       - name: status
         variants:
-          - { min: 200, max: 299, fg: green }
-          - { min: 400, max: 499, fg: yellow, bold: true }
+        - { min: 200, max: 299, fg: green }
+        - { min: 400, max: 499, fg: yellow, bold: true }
       - literal: " "
       - name: method
         variants:
-          - { value: GET, fg: white, bold: true }
-          - { value: POST, fg: blue }
-          - { value: PUT, fg: yellow }
+        - { value: GET, fg: white, bold: true }
+        - { value: POST, fg: blue }
+        - { value: PUT, fg: yellow }
       - literal: " "
       - name: path
       - name: took

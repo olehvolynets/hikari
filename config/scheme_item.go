@@ -19,7 +19,7 @@ type SchemeItem struct {
 
 type EnumVariant struct {
 	Value   string `yaml:"value"`
-	Replace string `yaml:"literal"`
+	Replace string `yaml:"replace"`
 
 	Min float64 `yaml:"min"`
 	Max float64 `yaml:"max"`
