@@ -3,6 +3,7 @@ package config
 type SchemeItem struct {
 	Name    string `yaml:"name"`
 	Literal string `yaml:"literal"`
+	Inline  bool   `yaml:"inline"`
 
 	As       string       `yaml:"as"`
 	Type     PropertyType `yaml:"type"`

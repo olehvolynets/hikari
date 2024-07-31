@@ -9,7 +9,7 @@ types:
     variants:
     - { value: TRACE, replace: TRC, fg: white }
     - { value: DEBUG, replace: DBG, fg: magenta }
-    - { value: INFO, replace: INF, fg: blue }
+    - { value: INFO, replace: INF, fg: blue, prefix: { literal: "=> ", fg: red } }
     - { value: WARN, replace: WRN, fg: yellow, bold: true }
     - { value: ERROR, replace: ERR, fg: red, bold: true, underline: true }
     prefix: "["
@@ -32,7 +32,7 @@ events:
       - literal: " "
       - name: method
         variants:
-        - { value: GET, fg: white, bold: true }
+        - { value: GET, fg: white, bold: true, postfix: { literal: "!!!", fg: cyan} }
         - { value: POST, fg: blue }
         - { value: PUT, fg: yellow }
       - literal: " "

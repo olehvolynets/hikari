@@ -31,9 +31,11 @@ func NewEnumHandler(cfg []config.EnumVariant) *EnumHandler {
 		}
 
 		handler.Variants = append(handler.Variants, EnumVariantHandler{
-			Value: variant.Value,
-			Min:   variant.Min,
-			Max:   variant.Max,
+			Value:   variant.Value,
+			Min:     variant.Min,
+			Max:     variant.Max,
+			Prefix:  NewDecorator(variant.Prefix),
+			Postfix: NewDecorator(variant.Postfix),
 			LiteralHandler: LiteralHandler{
 				Literal:   replaceValue,
 				Colorizer: variant.ToColor(),
@@ -61,10 +63,16 @@ type EnumVariantHandler struct {
 	Min float64 `yaml:"min"`
 	Max float64 `yaml:"max"`
 
+	Prefix  *Decorator
+	Postfix *Decorator
+
 	LiteralHandler
 }
 
 func (h *EnumVariantHandler) Render(ctx *Context, val reflect.Value) {
+	h.renderDecorator(ctx, h.Prefix)
+	defer h.renderDecorator(ctx, h.Postfix)
+
 	if h.Min != 0 && h.Max != 0 {
 		h.LiteralHandler.Colorizer.Fprint(ctx.W, numericValue(val))
 	} else {
@@ -91,6 +99,21 @@ func (h *EnumVariantHandler) matchNumericRange(val float64) bool {
 	}
 
 	return false
+}
+
+func (h *EnumVariantHandler) renderDecorator(ctx *Context, d *Decorator) {
+	if d == nil {
+		return
+	}
+
+	switch {
+	case d.Colorizer != nil:
+		d.Colorizer.Fprint(ctx.W, d.Literal)
+	case h.LiteralHandler.Colorizer != nil:
+		h.LiteralHandler.Colorizer.Fprint(ctx.W, d.Literal)
+	default:
+		fmt.Fprint(ctx.W, d.Literal)
+	}
 }
 
 func numericValue(v reflect.Value) float64 {
