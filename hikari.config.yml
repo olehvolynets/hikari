@@ -9,11 +9,15 @@ types:
     variants:
     - { value: TRACE, replace: TRC, fg: white }
     - { value: DEBUG, replace: DBG, fg: magenta }
-    - { value: INFO, replace: INF, fg: blue, prefix: { literal: "=> ", fg: red } }
-    - { value: WARN, replace: WRN, fg: yellow, bold: true }
-    - { value: ERROR, replace: ERR, fg: red, bold: true, underline: true }
-    prefix: "["
-    postfix: "]"
+    - { value: INFO, replace: INF, fg: blue }
+    - { value: WARN, replace: WRN, fg: yellow }
+    - { value: ERROR, replace: ERR, fg: red }
+    prefix:
+      literal: "["
+      bold: true
+    postfix:
+      literal: "]"
+      bold: true
 
 # type of events and scheme of their rendering
 events:
@@ -27,32 +31,33 @@ events:
       - literal: " "
       - name: status
         variants:
-        - { min: 200, max: 299, fg: green }
+        - { min: 100, max: 199, fg: white, bold: true }
+        - { min: 200, max: 299, fg: green, bold: true }
+        - { min: 300, max: 399, fg: blue, bold: true }
         - { min: 400, max: 499, fg: yellow, bold: true }
+        - { min: 500, max: 599, fg: red, bold: true }
       - literal: " "
       - name: method
         variants:
-        - { value: GET, fg: white, bold: true, postfix: { literal: "!!!", fg: cyan} }
+        - { value: GET, fg: white, bold: true }
         - { value: POST, fg: blue }
         - { value: PUT, fg: yellow }
       - literal: " "
       - name: path
+      - literal: " "
       - name: took
         type: duration
         bold: true
-        prefix: " "
+      - literal: " "
       - name: location
         optional: true
-        prefix: " to: "
+        prefix: "to: "
       - name: event
         skip: true
       - name: msg
         skip: true
       - name: traceId
         skip: true
-      # - name: ts
-      #   type: datetime
-      # - special: rest
   - name: ServerStart
     matcher:
       event: ServerStart
@@ -64,40 +69,33 @@ events:
         as: timestamp
         postfix: " "
       - name: ip
-        fg: green
+        fg: cyan
+        bold: true
       - literal: ":"
-        fg: green
+        fg: cyan
+        bold: true
       - name: port
-        fg: green
+        fg: cyan
+        bold: true
+      - literal: " "
       - name: msg
         skip: true
       - name: event
         fg: blue
-        prefix:
-          literal: " ("
-          fg: white
-        postfix:
-          literal: ")"
-          fg: white
   - name: ServerShutdown
     matcher:
       event: ServerShutdown
     scheme:
       - name: severity
         as: severity
-        postfix: " "
+      - literal: " "
       - name: ts
         as: timestamp
-      - name: msg
-        prefix: " "
+      - literal: " "
       - name: event
         fg: blue
-        prefix:
-          literal: " ("
-          fg: white
-        postfix:
-          literal: ")"
-          fg: white
+      - name: msg
+        skip: true
 
   - name: ServerStop
     matcher:
@@ -111,12 +109,6 @@ events:
         postfix: " "
       - name: event
         fg: blue
-        prefix:
-          literal: " ("
-          fg: white
-        postfix:
-          literal: ")"
-          fg: white
       - name: msg
         skip: true
   - name: DBTrace
@@ -135,13 +127,13 @@ events:
         optional: true
         prefix: " ["
         postfix: "]"
+      - literal: " "
       - name: took
         fg: white
         bold: true
-        prefix: " "
+      - literal: " "
       - name: error
         optional: true
-        prefix: " "
       - name: event
         skip: true
 
@@ -152,8 +144,8 @@ events:
     scheme:
       - name: severity
         as: severity
-        postfix: " "
+      - literal: " "
       - name: ts
         as: timestamp
-        postfix: " "
+      - literal: " "
       - name: msg

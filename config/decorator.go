@@ -16,20 +16,17 @@ func (d *Decorator) UnmarshalYAML(node *yaml.Node) error {
 	case yaml.ScalarNode:
 		d.Literal = node.Value
 	case yaml.MappingNode:
-		for i := 0; i < len(node.Content); i++ {
+		for i := 0; i < len(node.Content); i += 2 {
 			keyNode := node.Content[i]
 
-			switch keyNode.Value {
-			case "literal":
+			if keyNode.Value == "literal" {
 				valueNode := node.Content[i+1]
 				d.Literal = valueNode.Value
-			case "display":
-				valueNode := node.Content[i+1]
-				valueNode.Decode(&d.DisplayProps)
+				break
 			}
-
-			i++
 		}
+
+		node.Decode(&d.DisplayProps)
 	default:
 		return errors.New("unsupported value for prefix/postfix, must be a literal or an object")
 	}
