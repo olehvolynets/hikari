@@ -18,6 +18,8 @@ types:
     postfix:
       literal: "]"
       bold: true
+  - name: timing
+    type: duration
 
 # type of events and scheme of their rendering
 events:
@@ -123,9 +125,10 @@ events:
         postfix: " "
       - name: query
         fg: magenta
+      - literal: " "
       - name: args
         optional: true
-        prefix: " ["
+        prefix: "["
         postfix: "]"
       - literal: " "
       - name: took
@@ -137,7 +140,7 @@ events:
       - name: event
         skip: true
 
-  - name: Rest
+  - name: Default
     matcher:
       msg:
         filled: true
