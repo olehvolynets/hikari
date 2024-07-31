@@ -43,6 +43,7 @@ func NewEventHandler(evt config.Event, refHandlers []*ReferenceHandler) *EventHa
 				Key:         schemeItem.Name,
 				Skip:        schemeItem.Skip,
 				Optional:    schemeItem.Optional,
+				Inline:      schemeItem.Inline,
 				Type:        schemeItem.Type,
 				Colorizer:   schemeItem.ToColor(),
 				EnumHandler: NewEnumHandler(schemeItem.Variants),

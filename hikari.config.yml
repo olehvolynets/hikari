@@ -55,6 +55,9 @@ events:
       - name: location
         optional: true
         prefix: "to: "
+      - literal: " "
+      - name: params
+        inline: true
       - name: event
         skip: true
       - name: msg

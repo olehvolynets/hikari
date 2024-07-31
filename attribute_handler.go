@@ -12,6 +12,7 @@ type AttributeHandler struct {
 	Key      string
 	Skip     bool
 	Optional bool
+	Inline   bool
 	Type     config.PropertyType
 	Prefix   *Decorator
 	Postfix  *Decorator
@@ -133,18 +134,36 @@ func (h *AttributeHandler) renderArray(ctx *Context, val reflect.Value) {
 	}
 
 	fmt.Fprint(ctx.W, "[")
-	ctx.Indent()
+
+	if !h.Inline {
+		ctx.Indent()
+		fmt.Fprintln(ctx.W)
+	}
+
 	if val.Len() > 0 {
+		fmt.Fprint(ctx.W, ctx.CurrentIndent())
 		h.render(ctx, val.Index(0))
 
 		if val.Len() > 1 {
 			for i := 1; i < val.Len(); i++ {
-				fmt.Fprint(ctx.W, ", ")
+				fmt.Fprint(ctx.W, ",")
+
+				if h.Inline {
+					fmt.Fprint(ctx.W, " ")
+				} else {
+					fmt.Fprintf(ctx.W, "\n%s", ctx.CurrentIndent())
+				}
+
 				h.render(ctx, val.Index(i))
 			}
 		}
 	}
-	ctx.Dedent()
+
+	if !h.Inline {
+		ctx.Dedent()
+		fmt.Fprintln(ctx.W)
+	}
+
 	fmt.Fprint(ctx.W, "]")
 }
 
@@ -154,8 +173,14 @@ func (h *AttributeHandler) renderMap(ctx *Context, val reflect.Value) {
 		return
 	}
 
-	fmt.Fprintln(ctx.W, "{")
-	ctx.Indent()
+	fmt.Fprint(ctx.W, "{")
+	if h.Inline {
+		fmt.Fprint(ctx.W, " ")
+	} else {
+		fmt.Fprintln(ctx.W)
+		ctx.Indent()
+	}
+
 	for _, key := range val.MapKeys() {
 		mapKeyFormat.Fprintf(
 			ctx.W,
@@ -164,9 +189,19 @@ func (h *AttributeHandler) renderMap(ctx *Context, val reflect.Value) {
 			key.String(),
 		)
 		h.render(ctx, val.MapIndex(key))
-		fmt.Fprintln(ctx.W)
+		if h.Inline {
+			fmt.Fprint(ctx.W, ", ")
+		} else {
+			fmt.Fprintln(ctx.W)
+		}
 	}
-	ctx.Dedent()
+
+	if h.Inline {
+		fmt.Fprint(ctx.W, " ")
+	} else {
+		ctx.Dedent()
+	}
+
 	fmt.Fprint(ctx.W, ctx.CurrentIndent(), "}")
 }
 
