@@ -42,8 +42,9 @@ events:
       - name: method
         variants:
         - { value: GET, fg: white, bold: true }
-        - { value: POST, fg: blue }
-        - { value: PUT, fg: yellow }
+        - { value: POST, fg: blue, bold: true }
+        - { value: PUT, fg: yellow, bold: true }
+        - { value: DELETE, fg: red, bold: true }
       - literal: " "
       - name: path
       - literal: " "
@@ -64,12 +65,10 @@ events:
     matcher:
       event: ServerStart
     scheme:
-      - name: severity
-        as: severity
-        postfix: " "
-      - name: ts
-        as: timestamp
-        postfix: " "
+      - { name: severity, as: severity }
+      - literal: " "
+      - { name: ts, as: timestamp }
+      - literal: " "
       - name: ip
         fg: cyan
         bold: true
@@ -80,10 +79,9 @@ events:
         fg: cyan
         bold: true
       - literal: " "
-      - name: msg
-        skip: true
       - name: event
         fg: blue
+      - { name: msg, skip: true }
   - name: ServerShutdown
     matcher:
       event: ServerShutdown
@@ -103,12 +101,10 @@ events:
     matcher:
       event: ServerStop
     scheme:
-      - name: severity
-        as: severity
-        postfix: " "
-      - name: ts
-        as: timestamp
-        postfix: " "
+      - { name: severity, as: severity }
+      - literal: " "
+      - { name: ts, as: timestamp }
+      - literal: " "
       - name: event
         fg: blue
       - name: msg
@@ -117,14 +113,11 @@ events:
     matcher:
       event: DBTrace
     scheme:
-      - name: severity
-        as: severity
-        postfix: " "
-      - name: ts
-        as: timestamp
-        postfix: " "
-      - name: query
-        fg: magenta
+      - { name: severity, as: severity }
+      - literal: " "
+      - { name: ts, as: timestamp }
+      - literal: " "
+      - { name: query, fg: magenta, bold: true }
       - literal: " "
       - name: args
         optional: true
@@ -145,10 +138,8 @@ events:
       msg:
         filled: true
     scheme:
-      - name: severity
-        as: severity
+      - { name: severity, as: severity }
       - literal: " "
-      - name: ts
-        as: timestamp
+      - { name: ts, as: timestamp }
       - literal: " "
       - name: msg
