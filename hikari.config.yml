@@ -20,6 +20,8 @@ types:
       bold: true
   - name: timing
     type: duration
+  - name: params
+    inline: true
 
 # type of events and scheme of their rendering
 events:
@@ -57,7 +59,7 @@ events:
         prefix: "to: "
       - literal: " "
       - name: params
-        inline: true
+        as: params
       - name: event
         skip: true
       - name: msg

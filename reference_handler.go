@@ -16,6 +16,7 @@ func NewReferenceHandler(t config.Type) *ReferenceHandler {
 		Name: t.Name,
 		attrHandler: AttributeHandler{
 			Type:        t.Type,
+			Inline:      t.Inline,
 			EnumHandler: NewEnumHandler(t.Variants),
 			Prefix:      NewDecorator(t.Prefix),
 			Postfix:     NewDecorator(t.Postfix),
